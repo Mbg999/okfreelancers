@@ -1,4 +1,4 @@
-# okfreelancers
+# OkFreelancers
 Este es el proyecto final que presenté en mi grado de DAW en 2020, y que me dió para un 10 😀
 
 Consiste en una aplicación que sirve como nexo entre empresas y freelancers, de forma que las empresas pueden crear proyectos, y los freelancers pueden ofertarse en proyectos de su categoría.
