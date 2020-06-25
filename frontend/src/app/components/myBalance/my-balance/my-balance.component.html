@@ -1,0 +1,15 @@
+<div class="row">
+    <div class="col-12 col-md-6 col-xl-3 mx-auto mb-2">
+        <button type="button" class="btn btn-primary btn-block" (click)="openMyBalanceModal()">
+            <span class="mdi mdi-bank-transfer-in" translate> user.add_balance</span>
+        </button>
+    </div>
+    <div class="col-12 col-md-6 col-xl-3 mx-auto">
+        <button type="button" class="btn btn-primary btn-block" (click)="openMyBalanceModal(true)">
+            <span class="mdi mdi-bank-transfer-out" translate> user.withdraw_balance</span>
+        </button>
+    </div>
+    <div class="col-12 mt-3">
+        <app-my-balance-table [transactions]="transactions" (generatePDF)="generatePDF($event)"></app-my-balance-table>
+    </div>
+</div>

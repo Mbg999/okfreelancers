@@ -1,0 +1,16 @@
+<div class="position-relative">
+    <video class="card-img-top" #videoPlayer [ngClass]="{'d-none': !ready}">
+        <source [src]="video" [type]="video?.type" />
+        <span translate>freelancers.portfolio.unsupported_video</span>
+    </video>
+    <img *ngIf="!ready" class="card-img-top" src="assets/images/noimg_portfolios-videos.png">
+    <div class="position-absolute video_overlay" [ngClass]="{'video_overlay_effect': ready}">
+        <div *ngIf="ready" class="d-flex justify-content-center align-items-center h-100 video_btns"
+        (click)="togglePlay()">
+            <span *ngIf="player?.paused; else play" class="mdi mdi-play-circle-outline h-50" title="Play"></span>
+            <ng-template #play>
+                <span class="mdi mdi-pause-circle-outline h-50" title="Pause"></span>
+            </ng-template>
+        </div>
+    </div>
+</div>

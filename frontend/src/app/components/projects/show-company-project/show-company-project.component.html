@@ -1,0 +1,89 @@
+<div *ngIf="project; else loading" class="container animated fadeIn">
+    <div class="row">
+        <!-- LEFT SECTION -->
+        <div class="col-12 col-md-4 col-xl-3 py-3 border-right text-center">
+            <!-- COMPANY INFO -->
+            <div class="card bg-light">
+                <div class="card-body">
+                    <!-- LOGO, NAME, SURNAMES -->
+                    <div class="rounded pointer" [routerLink]="[(!project.user_id) ? '/MyCompany/show' : '/company/'+project.company_name]">
+                        <p class="m-0 p-0" translate>companies.company</p>
+                        <img [src]="project.company_logo | image:'companies/logos'" class="w-75 mx-auto my-3 rounded">
+                        <h5 class="p-0 m-0 h5"><small><b>{{project.company_name}}</b></small></h5>
+                    </div>
+                    <!-- /LOGO, NAME, SURNAMES -->
+                </div>
+            </div>
+            <!-- /COMPANY INFO -->
+            <!-- MARK AS FINISHED -->
+            <div *ngIf="!project.deleted_at && !project.user_id" class="border-top pt-3 mt-3">
+                <button class="btn btn-primary" (click)="toggleProjectFinished.emit(true)">
+                    <span *ngIf="project.finished; else showMark" class="mdi mdi-bookmark-off" translate> projects.unmark_as_finished</span>
+                    <ng-template #showMark>
+                        <span class="mdi mdi-bookmark-check" translate> projects.mark_as_finished</span>
+                    </ng-template>
+                </button>
+            </div>
+            <!-- /MARK AS FINISHED-->
+            <!-- FINISHED DATE -->
+            <div *ngIf="project.finished" class="border-top pt-3 mt-3">
+                <h6>
+                    <span class="d-block" translate>projects.finished_date</span>
+                    <span class="d-block">{{project.finished | date:'dd MMMM yyyy':null:_multilangService.activeLang}}</span>
+                </h6>
+            </div>
+            <!-- /FINISHED DATE -->
+        </div>
+        <!-- /LEFT SECTION -->
+        <!-- RIGHT SECTION -->
+        <div class="col-12 col-md-8 col-xl-9 py-3">
+            <h1 class="text-center mb-5">{{project.title}}</h1>
+            <p *ngIf="project.finished" class="text-center">
+                <span class="badge badge-dark" translate>miscellaneous.finished</span>
+            </p>
+            <h2 class="h4" translate>miscellaneous.description</h2>
+            <div class="edited-text" [innerHTML]="project.description | safe:'html'"></div>
+            <!-- CATEGORIES -->
+            <div *ngIf="project.categories?.length > 0" class="border-top pt-3 mt-3">
+                <h3 class="h4" translate>categories.categories</h3>
+                <p>
+                    <span *ngFor="let category of project.categories" [title]="category.description"
+                    [ngStyle]="{'color':category.title_color,'background-color':category.background_color}"
+                    class="badge badge-pill badge-primary py-1 mr-1 pointer" [routerLink]="['/category',category.name]">
+                        {{category.name}}
+                    </span>
+                </p>
+            </div>
+            <!-- /CATEGORIES -->
+            <!-- SKILLS -->
+            <div *ngIf="project.skills?.length > 0" class="border-top pt-3 mt-3">
+                <h3 class="h4" translate>skills.skills</h3>
+                <p>
+                    <span *ngFor="let skill of project.skills" [title]="skill.description"
+                    [ngStyle]="{'color':skill.title_color,'background-color':skill.background_color}"
+                    class="badge badge-pill badge-primary py-1 mr-1 pointer" [routerLink]="['/skill',skill.name]">
+                        {{skill.name}}
+                    </span>
+                </p>
+            </div>
+            <!-- /SKILLS -->
+            <!-- OFFERS -->
+            <div *ngIf="user && !project.deleted_at" class="border-top pt-3 mt-3">
+                <h3 translate>offers.offers</h3>
+                <!-- FREELANCER OFFERS FORM -->
+                <app-my-offers *ngIf="project.user_id; else offersToMyProject" [project_id]="project.id" [project_finished]="project.finished"></app-my-offers>
+                <!-- /FREELANCER OFFERS FORM -->
+                <!-- FREELANCER OFFERS TO MY PROJECT -->
+                <ng-template #offersToMyProject>
+                    <app-offers-of-my-project [project_id]="project.id" [project_finished]="project.finished"></app-offers-of-my-project>
+                </ng-template>
+                <!-- /FREELANCER OFFERS TO MY PROJECT -->
+            </div>
+            <!-- /OFFERS -->
+        </div>
+        <!-- /RIGHT SECTION -->
+    </div>
+</div>
+<ng-template #loading>
+    <h1 class="mdi mdi-circle-half mdi-spin mdi-48px" translate> dialog.loading</h1>
+</ng-template>

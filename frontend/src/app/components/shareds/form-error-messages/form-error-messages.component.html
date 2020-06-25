@@ -1,0 +1,26 @@
+<div class="text-danger" *ngIf="control && control.errors && (control.dirty || control.touched)">
+    <div *ngIf="control.errors.required">
+        <small translate>validators.required</small>
+    </div>
+    <div *ngIf="control.errors.email">
+        <small translate>validators.email</small>
+    </div>
+    <div *ngIf="control.errors.mobile">
+        <small translate>validators.mobile</small>
+    </div>
+    <div *ngIf="control.errors.pattern">
+        <small translate>validators.pattern</small>
+    </div>
+    <div *ngIf="control.errors.minlength">
+        <small translate [translateParams]="{minlength: control.errors.minlength.requiredLength}">validators.minlength</small>
+    </div>
+    <div *ngIf="control.errors.maxlength">
+        <small translate [translateParams]="{maxlength: control.errors.maxlength.requiredLength}">validators.maxlength</small>
+    </div>
+    <div *ngIf="control.errors.invalidDateFormat">
+        <small translate>validators.date_format</small>
+    </div>
+    <div *ngIf="control.errors.in">
+        <small translate>validators.in</small>
+    </div>
+</div>

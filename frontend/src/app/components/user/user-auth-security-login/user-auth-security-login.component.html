@@ -1,0 +1,49 @@
+<div class="modal-content animated fadeIn faster">
+    <div class="modal-header">
+        <span translate>user.securityLogin</span>
+        <button type="button" class="close" (click)="activeModal.dismiss()" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        <input type="text" class="d-none" ngbAutofocus>
+        <!-- 
+            trick for "remove" autofocus, it has some double clicks problems
+            https://stackoverflow.com/questions/53613974/angular7-and-ngbmodal-how-to-remove-default-auto-focus
+        -->
+    </div>
+    <div class="modal-body">
+        <!-- PICTURE + EMAIL -->
+        <div class="text-center">
+            <figure class="figure">
+                <img [src]="user.picture|image:'users/pictures'" class="figure-img rounded"
+                [title]="user.name" [alt]="user.name">
+                <figcaption class="h3">{{user.email}}</figcaption>
+                <p class="text-danger" *ngIf="loginError">{{ loginError }}</p>
+            </figure>
+        </div>
+        <!-- /PICTURE + EMAIL -->
+        <form novalidate [formGroup]="loginForm" (submit)="login()">
+            <!-- PASSWORD -->
+            <div class="form-group">
+                <label for="lpassword" translate>user.password</label>
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">
+                            <span class="mdi mdi-lock"></span>
+                        </span>
+                    </div>
+                    <input type="password" id="lpassword" formControlName="lpassword" class="form-control"
+                    [ngClass]="{'is-valid':lpassword.valid && (lpassword.dirty || lpassword.touched),
+                    'is-invalid': (lpassword.invalid || loginError) && (lpassword.dirty || lpassword.touched)}">
+                </div>
+                <form-error-messages [control]="lpassword"></form-error-messages>
+            </div>
+            <!-- /PASSWORD -->
+            <!-- SUBMIT BTN -->
+            <button type="submit" class="btn btn-primary"
+            [disabled]="loginForm.invalid" translate>
+                miscellaneous.confirm
+            </button>
+            <!-- /SUBMIT BTN -->
+        </form>
+    </div>
+</div>

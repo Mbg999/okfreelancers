@@ -1,0 +1,80 @@
+<h5 class="mb-2 mt-4" translate>offers.your_offer</h5>
+<form [formGroup]="offerForm" novalidate>
+    <!-- PRICE -->
+    <div class="form-group">
+        <label for="price" translate>offers.price</label>
+        <div class="input-group">
+            <div class="input-group-prepend">
+                <span class="input-group-text">
+                    <span class="mdi mdi-currency-eur"></span>
+                </span>
+            </div>
+            <input type="number" id="price" formControlName="price" class="form-control"
+            [ngClass]="{'is-valid':price.valid && (price.dirty || price.touched),
+            'is-invalid': price.invalid && (price.dirty || price.touched)}">
+        </div>
+        <form-error-messages [control]="price"></form-error-messages>
+    </div>
+    <!-- /PRICE -->
+    <!-- APPROX_HOURS -->
+    <div class="form-group">
+        <label for="approx_hours" translate>offers.approx_hours</label>
+        <div class="input-group">
+            <div class="input-group-prepend">
+                <span class="input-group-text">
+                    <span class="mdi mdi-calendar-clock"></span>
+                </span>
+            </div>
+            <input type="number" id="approx_hours" formControlName="approx_hours" class="form-control"
+            [ngClass]="{'is-valid':approx_hours.valid && (approx_hours.dirty || approx_hours.touched),
+            'is-invalid': approx_hours.invalid && (approx_hours.dirty || approx_hours.touched)}">
+        </div>
+        <form-error-messages [control]="approx_hours"></form-error-messages>
+    </div>
+    <!-- /APPROX_HOURS -->
+    <!-- APPROX_TERM -->
+    <div class="form-group">
+        <label for="approx_term" translate>offers.approx_term</label>
+        <div class="input-group">
+            <div class="input-group-prepend">
+                <span class="input-group-text">
+                    <span class="mdi mdi-calendar-check"></span>
+                </span>
+            </div>
+            <input type="number" id="approx_term" formControlName="approx_term" class="form-control"
+            [ngClass]="{'is-valid':approx_term.valid && (approx_term.dirty || approx_term.touched),
+            'is-invalid': approx_term.invalid && (approx_term.dirty || approx_term.touched)}">
+        </div>
+        <form-error-messages [control]="approx_term"></form-error-messages>
+    </div>
+    <!-- /APPROX_TERM -->
+    <!-- MESSAGE -->
+    <div class="form-group">
+        <label for="message" translate>offers.message</label>
+        <p-editor id="message" formControlName="message" [style]="{'height':'320px'}"
+        [p-editor-model]="editor" #editor></p-editor>
+        <form-error-messages [control]="message"></form-error-messages>
+    </div>
+    <!-- MESSAGE -->
+    <!-- SUBMIT BTN -->
+    <div class="mt-3">
+        <div *ngIf="offer; else itsCreate">
+            <div class="btn-group">
+                <button type="button" (click)="update()" class="btn btn-warning"
+                [disabled]="offerForm.invalid" translate>
+                miscellaneous.update
+            </button>
+            <button type="button" (click)="delete()" class="btn btn-danger" translate>
+                miscellaneous.delete
+            </button>
+        </div>
+    </div>
+    <ng-template #itsCreate>
+        <button type="submit" (click)="create()" class="btn btn-primary"
+        [disabled]="offerForm.invalid" translate>
+        miscellaneous.create
+    </button>
+    </ng-template>
+    </div>
+    <!-- /SUBMIT BTN -->
+</form>

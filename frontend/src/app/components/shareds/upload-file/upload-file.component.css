@@ -1,0 +1,61 @@
+.wrapping_div button:last-of-type {
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+}
+
+.preview-category {
+    width: 280px; /* +2 for border*/
+    margin: 0 auto;
+    cursor: pointer;
+}
+
+.preview-category img {
+    height: 61px;
+}
+
+.preview-portfolio-image {
+    max-width: 410px; /* +2 for border*/
+    margin: 0 auto;
+}
+
+.preview-portfolio-image img {
+    max-height: 250px;
+}
+
+/* Medium devices (tablets, 768px and up) */
+@media (min-width: 768px) { 
+    .preview-category {
+        width: 470px;
+    }
+    
+    .preview-category img {
+        height: 102px;
+    }
+
+    .preview-portfolio-image { /* -60px */
+        max-width: 360px;
+    }
+
+    .preview-portfolio-image img {
+        max-height: 214px;
+    }
+}
+
+/* Extra large devices (large desktops, 1200px and up) */
+@media (min-width: 1200px) { 
+    .preview-category {
+        width: 440px;
+    }
+
+    .preview-category img {
+        height: 96px;
+    }
+
+    .preview-portfolio-image { /* -10px */
+        max-width: 400px;
+    }
+
+    .preview-portfolio-image img {
+        max-height: 238px;
+    }
+}

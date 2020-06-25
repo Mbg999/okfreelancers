@@ -1,0 +1,123 @@
+<div *ngIf="user; else loading" class="container animated fadeIn">
+    <div class="row">
+        <!-- LEFT SECTION -->
+        <div class="col-12 col-md-4 col-xl-3 py-3 text-center border-right">
+            <!-- PICTURE -->
+            <img [src]="user.picture | image:'users/pictures'" class="w-100 rounded picture">
+            <!-- /PICTURE -->
+            <!-- NAME, SURNAMES -->
+            <div class="text-center my-2">
+                <h5 class="p-0 m-0">{{user.name}}</h5>
+                <h5 class="p-0 m-0">{{user.surnames}}</h5>
+            </div>
+            <!-- /NAME, SURNAMES -->
+            <!-- TOWN, REGION, COUNTRY -->
+            <address *ngIf="user.town" class="border-top pt-3 mt-3">
+                <span class="d-block">{{user.town}}, {{user.zip}}</span>
+                <span class="d-block">{{user.region}}, {{user.country}}</span>
+            </address>
+            <!-- /TOWN, REGION, COUNTRY -->
+            <!-- WEB & SOCIAL NETWORKS -->
+            <div class="social-networks border-top pt-3 mt-3">
+                <div>
+                    <a [href]="'mailto:'+user.email" target="_blank" class="display-inline">
+                        <span class="mdi mdi-email" translate> user.email</span>
+                    </a>
+                </div>
+                <div *ngIf="user.github">
+                    <a [href]="user.github" target="_blank">
+                        <span class="mdi mdi-github"> GitHub</span>
+                    </a>
+                </div>
+                <div *ngIf="user.linkedin">
+                    <a [href]="user.linkedin" target="_blank">
+                        <span class="mdi mdi-linkedin"> LinkedIn</span>
+                    </a>
+                </div>
+                <div *ngIf="user.twitter">
+                    <a [href]="user.twitter" target="_blank">
+                        <span class="mdi mdi-twitter"> Twitter</span>
+                    </a>
+                </div>
+            </div>
+            <!-- /WEB & SOCIAL NETWORKS -->
+            <!-- USER SINCE -->
+            <div class="border-top pt-3 mt-3">
+                <p>
+                    <span translate>user.since</span>
+                    {{user.created_at | date:'MMMM yyyy':null:_multilangService.activeLang}}
+                </p>
+            </div>
+            <!-- /USER SINCE -->
+            <!-- SEND MESSAGE -->
+            <div *ngIf="auth_user" class="border-top pt-3 mt-3">
+                <a [routerLink]="['/messages', user.id]" class="btn btn-primary">
+                    <span *ngIf="user.id != auth_user.id; else ownChat" translate>chats.send_message</span>
+                    <ng-template #ownChat>
+                        <span translate>chats.own_chat</span>
+                    </ng-template>
+                </a>
+            </div>
+            <!-- /SEND MESSAGE -->
+        </div>
+        <!-- /LEFT SECTION -->
+        <!-- RIGHT SECTION -->
+        <div class="col-12 col-md-8 col-xl-9 py-3">
+            <!-- LOADING PROFILES -->
+            <h1 *ngIf="!company && !freelancers; else profiles"
+            class="mdi mdi-circle-half mdi-spin mdi-48px" translate> dialog.loading</h1>
+            <!-- /LOADING PROFILES -->
+            <ng-template #profiles>
+                <!-- NO COMPANY OR FREELANCER PROFILES -->
+                <h5 *ngIf="!company && freelancers.length < 1; else showProfiles" translate>user.no_profiles</h5>
+                <!-- /NO COMPANY OR FREELANCER PROFILES -->
+                <!-- COMPANY & FREELANCER PROFILES -->
+                <ng-template #showProfiles>
+                    <!-- COMPANY -->
+                    <div *ngIf="company" class="card mb-5">
+                        <div class="card-body">
+                            <h6 class="mb-3" translate>companies.company</h6>
+                            <div class="container-fluid">
+                                <div class="row">
+                                    <div class="col-4">
+                                        <img [src]="company.logo | image:'companies/logos'" class="w-100 rounded" [title]="company.name">
+                                    </div>
+                                    <div class="col-8">
+                                        <h5 class="card-title">{{company.name}}</h5>
+                                        <div class="card-text" [innerHTML]="company.description | safe:'html'"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <button *ngIf="itsMyProfile; else normalLink" class="btn btn-link btn-block text-primary text-center border-top pt-3 mt-3"
+                            routerLink="/MyCompany/show" translate>miscellaneous.view</button>
+                            <ng-template #normalLink>
+                                <button class="btn btn-link btn-block text-primary text-center border-top pt-3 mt-3"
+                                [routerLink]="['/company',company.name]" translate>miscellaneous.view</button>
+                            </ng-template>
+                        </div>
+                    </div>
+                    <!-- /COMPANY -->
+                    <!-- FREELANCER PROFILES -->
+                    <div *ngIf="freelancers?.length > 0" class="mb-5">
+                        <h6 class="mb-3" translate>freelancers.profiles</h6>
+                        <div class="card-columns column-count-xl-3">
+                            <app-freelancer-card *ngFor="let freelancer of freelancers"
+                            [freelancer]="freelancer"
+                            [showTitle]="false"
+                            [itsMyProfile]="itsMyProfile"
+                            [titleColor]="freelancer.title_color"
+                            [textColor]="freelancer.text_color"
+                            [bgColor]="freelancer.background_color"></app-freelancer-card>
+                        </div>
+                    </div>
+                    <!-- /FREELANCER PROFILES -->
+                </ng-template>
+                <!-- /COMPANY & FREELANCER PROFILES -->
+            </ng-template>
+        </div>
+        <!-- /RIGHT SECTION -->
+    </div>
+</div>
+<ng-template #loading>
+    <h1 class="mdi mdi-circle-half mdi-spin mdi-48px" translate> dialog.loading</h1>
+</ng-template>

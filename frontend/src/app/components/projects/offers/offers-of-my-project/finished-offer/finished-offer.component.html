@@ -1,0 +1,122 @@
+<div class="card">
+    <div class="card-body">
+        <div class="container-fluid">
+            <!-- FREELANCER INFO -->
+            <div class="row pointer" [routerLink]="['/freelancer', offer.freelancer_id]">
+                <div class="col-12 col-md-4 col-xl-3 text-center mb-2">
+                    <img class="w-100 rounded picture" [src]="offer.freelancer_picture | image:'freelancers/pictures'"
+                    [alt]="'miscellaneous.image' | translate">
+                </div>
+                <div class="col-12 col-md-8 col-xl-9">
+                    <h5 class="card-title">{{offer.freelancer_title}}</h5>
+                    <small class="card-text">
+                        <span translate>categories.category</span>: {{offer.category_name}}
+                        <span *ngIf="offer.created_at != offer.updated_at; else showCreated_at" class="d-block">
+                            <span translate>miscellaneous.updated_at</span>: 
+                            {{offer.updated_at | date:'dd MMMM yyyy':null:_multilangService.activeLang}}
+                        </span>
+                        <ng-template #showCreated_at>
+                            <span class="d-block">
+                                <span translate>miscellaneous.date</span>: 
+                                {{offer.created_at | date:'dd MMMM yyyy':null:_multilangService.activeLang}}
+                            </span>
+                        </ng-template>
+                    </small>
+                </div>
+            </div>
+            <!-- /FREELANCER INFO -->
+            <!-- OFFER + JOB -->
+            <div class="row">
+                <!-- OFFER -->
+                <div class="col-12">
+                    <p class="d-lg-flex justify-content-lg-between my-2 pt-2 border-top">
+                        <small class="d-block">
+                            <span translate>offers.price</span>: 
+                            <b class="d-lg-block">{{offer.price | currency:'EUR':'symbol-narrow':null:_multilangService.activeLang}}</b>
+                        </small>
+                        <small class="d-block">
+                            <span translate>offers.approx_hours</span>: 
+                            <b class="d-lg-block">{{offer.approx_hours}} <span translate>miscellaneous.hours</span></b>
+                        </small>
+                        <small class="d-block">
+                            <span translate>offers.aprox_total_price</span>: 
+                            <b class="d-lg-block">{{offer.price * offer.approx_hours | currency:'EUR':'symbol-narrow':null:_multilangService.activeLang}}</b>
+                        </small>
+                        <small class="d-block">
+                            <span translate>offers.approx_term</span>: 
+                            <b class="d-lg-block">{{offer.approx_term}} <span translate>miscellaneous.days</span></b>
+                        </small>
+                    </p>
+                    <h6 class="m-0 mt-4"><span translate>offers.message</span>:</h6>
+                    <div class="pt-1 edited-text" [innerHTML]="offer.message | safe:'html'"></div>
+                </div>
+                <!-- NO ACTION -->
+                <!-- /OFFER -->
+                <!-- JOB -->
+                <div class="col-12">
+                    <h5 class="card-title pt-2 border-top">
+                        <span translate>jobs.job </span>
+                        <small><span class="badge badge-dark" translate>miscellaneous.finished</span></small>
+                    </h5>
+                    <p class="d-lg-flex justify-content-lg-around my-2">
+                        <span class="d-block">
+                            <span translate>jobs.current_hours</span>: 
+                            <span class="d-lg-block">
+                                {{offer.job.hours}}
+                                <span translate>miscellaneous.hours</span>
+                            </span>
+                        </span>
+                        <span class="d-block">
+                            <span translate>jobs.finished</span>: 
+                            <span class="d-lg-block">{{offer.job.finished  | date:'dd MMMM yyyy':null:_multilangService.activeLang}}</span>
+                        </span>
+                        <span class="d-block">
+                            <span translate>jobs.time_elapsed_until_end</span>: 
+                            <span class="d-lg-block">{{offer.job.days_passed}}</span>
+                        </span>
+                    </p>
+                </div>
+                <!-- /JOB -->
+                <!-- ASSESSMENT FORM -->
+                <div class="col-12 mt-2 pt-2 border-top">
+                    <h5 class="card-title" translate>jobs.make_a_rating</h5>
+                    <form [formGroup]="assessmentForm" (submit)="emitRate()">
+                        <!-- RATE -->
+                        <div class="form-group">
+                            <label translate>jobs.rating</label>
+                            <ngx-star-rating [total]="5" [rating]="rate" (rated)="onRate($event)" [emptyColor]="'#343a40'" [filledColor]="'#00b5d7'" [type]="'hollow'"></ngx-star-rating>
+                        </div>
+                        <!-- /RATE -->
+                        <!-- ASSESSMENT -->
+                        <div class="form-group">
+                            <label for="assessment" translate>jobs.assessment</label>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">
+                                        <span class="mdi mdi-file-document-edit-outline"></span>
+                                    </span>
+                                </div>
+                                <textarea id="assessment" formControlName="assessment" class="form-control"
+                                [ngClass]="{'is-valid':assessment.valid && (assessment.dirty || assessment.touched),
+                                'is-invalid': assessment.invalid && (assessment.dirty || assessment.touched)}">
+                                </textarea>
+                            </div>
+                            <form-error-messages [control]="assessment"></form-error-messages>
+                        </div>
+                        <!-- /ASSESSMENT -->
+                        <!-- SUBMIT BTN -->
+                        <button type="submit" class="btn btn-primary" [disabled]="assessmentForm.invalid || rate < 1">
+                            <span *ngIf="rate; else itsNewRating" class="mdi mdi-map-marker-check" translate> jobs.edit_assess</span>
+                            <ng-template #itsNewRating>
+                                <span class="mdi mdi-map-marker-check" translate> jobs.assess</span>
+                            </ng-template>
+                        </button>
+                        <!-- /SUBMIT BTN -->
+                    </form>
+                </div>
+                <!-- /ASSESSMENT FORM -->
+            </div>
+            <!-- /OFFER + JOB -->
+        </div>
+    </div>
+</div>

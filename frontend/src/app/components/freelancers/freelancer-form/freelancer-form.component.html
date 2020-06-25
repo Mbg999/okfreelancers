@@ -1,0 +1,218 @@
+<div>
+    <form [formGroup]="freelancerForm" (submit)="send()" novalidate>
+        <!-- FREELANCER INFO -->
+        <div>
+            <!-- CURRENT CATEGORY -->
+            <div *ngIf="freelancer" class="form-group">
+                <label for="current" translate>categories.current</label>
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">
+                            <span class="mdi mdi-account-details"></span>
+                        </span>
+                    </div>
+                    <input type="text" id="current" class="form-control" [value]="freelancer.category_name" disabled>
+                </div>
+            </div>
+            <!-- /CURRENT CATEGORY -->
+            <!-- CATEGORY -->
+            <div class="form-group">
+                <label for="category" translate>categories.category</label>
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">
+                            <span class="mdi mdi-label-multiple"></span>
+                        </span>
+                    </div>
+                    <select id="category" class="form-control"
+                    formControlName="category_id" (change)="getSubcategoriesFromRoot($event.target.value)">
+                        <option value="" translate>categories.select_category</option>
+                        <option *ngFor="let cat of categories; let i = index" [value]="i" [title]="cat.description">
+                            {{cat.name}}
+                        </option>
+                    </select>
+                </div>
+                <form-error-messages [control]="category_id"></form-error-messages>
+            </div>
+            <!-- /CATEGORY -->
+            <!-- SUBCATEGORIES -->
+            <div class="form-group" *ngFor="let scat of subcategories;let idx = index">
+                <label [for]="'subcategory'+idx" translate>categories.subcategory</label>
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">
+                            <span class="mdi mdi-label-multiple-outline"></span>
+                        </span>
+                    </div>
+                    <select [id]="'subcategory'+idx" class="form-control" (change)="getSubcategories(idx, $event.target.value)">
+                        <option value="" translate>categories.select_subcategory</option>
+                        <option *ngFor="let cat of scat; let i = index" [value]="i" [title]="cat.description">
+                            {{cat.name}}
+                        </option>
+                    </select>
+                </div>
+            </div>
+            <!-- /SUBCATEGORIES -->
+            <!-- REPEATED ERROR -->
+            <small *ngIf="repeated" class="text-danger repeated">{{repeated}}</small>
+            <!-- /REPEATED ERROR -->
+            <!-- TITLE -->
+            <div class="form-group">
+                <label for="title" translate>miscellaneous.title</label>
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">
+                            <span class="mdi mdi-format-title"></span>
+                        </span>
+                    </div>
+                    <input type="text" id="title" formControlName="title" class="form-control"
+                    [ngClass]="{'is-valid':title.valid && (title.dirty || title.touched),
+                    'is-invalid': title.invalid && (title.dirty || title.touched)}">
+                </div>
+                <form-error-messages [control]="title"></form-error-messages>
+            </div>
+            <!-- /TITLE -->
+            <!-- DESCRIPTION -->
+            <div class="form-group">
+                <label for="description" translate>miscellaneous.description</label>
+                <p-editor id="description" formControlName="description" [style]="{'height':'320px'}"
+                [p-editor-model]="editor" #editor></p-editor>
+                <form-error-messages [control]="description"></form-error-messages>
+            </div>
+            <!-- /DESCRIPTION -->
+            <!-- YEARS_EXP -->
+            <div class="form-group">
+                <label for="years_exp" translate>freelancers.years_exp</label>
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">
+                            <span class="mdi mdi-account-clock"></span>
+                        </span>
+                    </div>
+                    <select id="years_exp" formControlName="years_exp" class="form-control"
+                    [ngClass]="{'is-valid':years_exp.valid && (years_exp.dirty || years_exp.touched),
+                    'is-invalid': years_exp.invalid && (years_exp.dirty || years_exp.touched)}">
+                        <option value="" translate>miscellaneous.pick_a_value</option>
+                        <option value="1" translate>freelancers.less_than_2</option>
+                        <option value="2" translate>freelancers.between_2_and_5</option>
+                        <option value="5" translate>freelancers.between_5_and_7</option>
+                        <option value="7" translate>freelancers.over_7</option>
+                    </select>
+                </div>
+                <form-error-messages [control]="years_exp"></form-error-messages>
+            </div>
+            <!-- /YEARS_EXP -->
+            <!-- APPROX_FEE -->
+            <div class="form-group">
+                <label for="approx_fee" translate>freelancers.approx_fee_in_euro</label>
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">
+                            <span class="mdi mdi-currency-eur"></span>
+                        </span>
+                    </div>
+                    <input type="number" id="approx_fee" formControlName="approx_fee" class="form-control"
+                    [ngClass]="{'is-valid':approx_fee.valid && (approx_fee.dirty || approx_fee.touched),
+                    'is-invalid': approx_fee.invalid && (approx_fee.dirty || approx_fee.touched)}">
+                </div>
+                <form-error-messages [control]="approx_fee"></form-error-messages>
+            </div>
+            <!-- /APPROX_FEE -->
+            <!-- ADVERTISABLE -->
+            <div class="form-group form-check">
+                <input type="checkbox" id="advertisable" formControlName="advertisable" value="1"
+                class="form-check-input">
+                <label for="advertisable" class="form-check-label" translate>freelancers.advertisable</label>
+            </div>
+            <!-- /ADVERTISABLE -->
+            <!-- PICTURE -->
+            <div class="text-center">
+                <hr class="my-2">
+                <app-upload-file
+                [file]="freelancer?.picture"
+                [type]="'image'"
+                [imageType]="'picture'"
+                [imagePipe]="'freelancers/pictures'"
+                [imageSizeType]="'freelancer'"
+                [autoQuality]="true"
+                (add)="picture = $event"
+                (remove)="picture = null"></app-upload-file>
+            </div>
+            <!-- /PICTURE -->
+            <!-- SKILLS -->
+            <div *ngIf="originalSkills?.length > 0 || selectedSkills?.length > 0">
+                <hr>
+                <h4 translate>skills.skills</h4>
+                <!-- SELECTED SKILLS -->
+                <div *ngIf="selectedSkills?.length > 0" class="form-group">
+                    <label translate>skills.selected</label>
+                    <div>
+                        <span class="badge badge-pill badge-primary p-2 m-1"
+                        *ngFor="let skill of selectedSkills; let i = index"
+                        [title]="skill.description">
+                            {{skill.name}} 
+                            <span class="mdi mdi-close-thick" (click)="removeSkill(i)"></span>
+                        </span>
+                    </div>
+                </div>
+                <!-- /SELECTED SKILLS -->
+                <!-- SKILLS SELECT -->
+                <div *ngIf="originalSkills && originalSkills.length > 0" class="form-group">
+                    <label for="skill" translate>skills.select</label>
+                    <div>
+                        <!-- SEARCHBAR -->
+                        <div class="input-group w-100 position-relative searchBar">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">
+                                    <span class="mdi mdi-card-search"></span>
+                                </span>
+                            </div>
+                            <input class="form-control" id="searchBar" type="text" #s (keyup)="search(s.value)" (keyup.enter)="selectSkill()"
+                            [placeholder]="'miscellaneous.search' | translate" aria-label="Search"
+                            (focus)="showSkillsList = true" autocomplete="off">
+                            <span class="mdi mdi-close-thick" [ngClass]="{'d-none':s.value.length < 1}"
+                            (click)="clearSearchBar(s)"></span>
+                            <div class="input-group-apend">
+                                <span class="input-group-text" (click)="showSkillsList = !showSkillsList">
+                                    <span *ngIf="showSkillsList; else shrinkSkillList" class="mdi mdi-unfold-less-horizontal"
+                                    [title]="'miscellaneous.shrink_list' | translate"></span>
+                                    <ng-template #shrinkSkillList>
+                                        <span class="mdi mdi-unfold-more-horizontal"
+                                        [title]="'miscellaneous.expand_list' | translate"></span>
+                                    </ng-template>
+                                </span>
+                            </div>
+                        </div>
+                        <!-- /SEARCHBAR -->
+                        <!-- SKILLS LIST -->
+                        <div *ngIf="showSkillsList" class="bg-primary text-light">
+                            <ul id="skillsList">
+                                <ng-container *ngIf="skills; else noSkills">
+                                    <li *ngFor="let skill of skills; let i = index"
+                                    [value]="skill.id" [title]="skill.description" (click)="selectSkill(i)">
+                                        {{skill.name}}
+                                    </li>
+                                </ng-container>
+                                <ng-template #noSkills>
+                                    <li translate>skills.no_skills</li>
+                                </ng-template>
+                            </ul>
+                        </div>
+                        <!-- /SKILLS LIST -->
+                    </div>
+                </div>
+                <!-- SKILLS SELECT -->
+            </div>
+            <!-- /SKILLS -->
+        </div>
+        <!-- FREELANCER INFO -->
+        <!-- SUBMIT BTN -->
+        <div class="mt-3">
+            <button type="submit" class="btn btn-primary"
+            [disabled]="freelancerForm.invalid" translate>
+                {{(freelancer) ? 'miscellaneous.update' : 'miscellaneous.create'}}
+            </button>
+        </div>
+        <!-- /SUBMIT BTN -->
+    </form>
+</div>

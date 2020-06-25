@@ -1,0 +1,100 @@
+<div *ngIf="freelancerPaginator || projectPaginator; else loading" class="animated fadeIn">
+    <!-- CATEGORY -->
+    <div class="jumbotron cat-skill-jumbotron pointer" (click)="navigate()" [title]="category.name"
+    [style.background-image]="category.image | image:'categories':true"></div>
+    <h1 class="display-4" [style.color]="category.title_color">{{category.name}}</h1>
+    <p [style.color]="category.text_color">{{category.description}}</p>
+    <!-- /CATEGORY -->
+    <!-- FREELANCERS -->
+    <div *ngIf="freelancerPaginator?.data.length > 0" class="mb-5">
+        <hr class="my-4">
+        <div class="d-md-flex justify-content-md-between">
+            <h2 translate>freelancers.profiles</h2>
+            <button *ngIf="!filter" type="button" class="btn btn-link btn-sm" (click)="navigate('freelancer')" translate>freelancers.only</button>
+        </div>
+        <div class="card-columns">
+            <app-freelancer-card *ngFor="let freelancer of freelancerPaginator.data"
+            [freelancer]="freelancer"
+            [itsMyProfile]="user?.id == freelancer.user_id"
+            [showTitle]="false"
+            [titleColor]="category.title_color"
+            [textColor]="category.text_color"
+            [bgColor]="category.background_color"></app-freelancer-card>
+        </div>
+        <app-paginator [paginator]="freelancerPaginator" (changePage)="getFreelancers($event)"></app-paginator>
+    </div>
+    <!-- FREELANCERS -->
+    <!-- PROJECTS -->
+    <div *ngIf="projectPaginator?.data.length > 0" class="mb-5">
+        <hr class="my-4">
+        <div class="d-md-flex justify-content-md-between">
+            <h2 translate>projects.projects</h2>
+            <button *ngIf="!filter" type="button" class="btn btn-link btn-sm" (click)="navigate('project')" translate>projects.only</button>
+        </div>
+        <div class="card-columns">
+            <app-project-card *ngFor="let project of projectPaginator.data"
+            [project]="project" [itsMyProject]="user?.id == project.user_id"></app-project-card>
+        </div>
+        <app-paginator [paginator]="projectPaginator" (changePage)="getProjects($event)"></app-paginator>
+    </div>
+    <!-- PROJECTS -->
+    <!-- EMPTY CATEGORY -->
+    <div *ngIf="!(freelancerPaginator?.data.length > 0) && !(projectPaginator?.data.length > 0)">
+        <hr class="my-2">
+        <h4 class="py-3" translate>categories.empty</h4>
+    </div>
+    <!-- EMPTY CATEGORY -->
+    <!-- MORE CATEGORIES -->
+    <div>
+        <hr class="my-2">
+        <h5 translate>categories.more_categories</h5>
+        <form novalidate>
+            <!-- CATEGORIES -->
+            <div class="form-group">
+                <label for="cat_father" translate>categories.category</label>
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">
+                            <span class="mdi mdi-label-multiple"></span>
+                        </span>
+                    </div>
+                    <select id="cat_father" class="form-control" (change)="getSubcategoriesFromRoot($event.target.value)">
+                        <option value="" selected translate>categories.select_category</option>
+                        <option *ngFor="let cat of categories; let i = index" [value]="i" [title]="cat.description">
+                            {{cat.name}}
+                        </option>
+                    </select>
+                </div>
+            </div>
+            <!-- /CATEGORIES -->
+            <!-- SUBCATEGORIES -->
+            <div class="form-group" *ngFor="let scat of subcategories;let idx = index">
+                <label [for]="'subcat_father'+idx" translate>categories.subcategory</label>
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">
+                            <span class="mdi mdi-label-multiple-outline"></span>
+                        </span>
+                    </div>
+                    <select [id]="'subcat_father'+idx" class="form-control" (change)="getSubcategories(idx, $event.target.value)">
+                        <option value="" translate>categories.select_subcategory</option>
+                        <option *ngFor="let cat of scat; let i = index" [value]="i" [title]="cat.description">
+                            {{cat.name}}
+                        </option>
+                    </select>
+                </div>
+            </div>
+            <!-- /SUBCATEGORIES -->
+            <!-- SEARCH BTN -->
+            <button type="button" class="btn btn-primary btn-block"
+            [disabled]="!selectedCatName" (click)="searchCategory()">
+                <span class="mdi mdi-card-search" translate> miscellaneous.search</span>
+            </button>
+            <!-- /SEARCH BTN -->
+        </form>
+    </div>
+    <!-- /MORE CATEGORIES -->
+</div>
+<ng-template #loading>
+    <h1 class="mdi mdi-circle-half mdi-spin mdi-48px" translate> dialog.loading</h1>
+</ng-template>

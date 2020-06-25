@@ -1,0 +1,80 @@
+<div>
+    <!-- LOGIN -->
+    <ng-container *ngIf="!forgottenPassword; else forgotten">
+        <form novalidate [formGroup]="loginForm" (submit)="login()">
+            <!-- EMAIL -->
+            <div class="form-group">
+                <label for="lemail" translate>user.email</label>
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">
+                            <span class="mdi mdi-account"></span>
+                        </span>
+                    </div>
+                    <input type="text" id="lemail" formControlName="lemail" class="form-control"
+                    [ngClass]="{'is-valid':lemail.valid && (lemail.dirty || lemail.touched),
+                    'is-invalid': (lemail.invalid || loginError) && (lemail.dirty || lemail.touched)}">
+                </div>
+                <div class="alert alert-danger" *ngIf="loginError">
+                    <ng-container *ngIf="loginError.verify; else other">
+                        {{ loginError.verify }}
+                        <a role="button" (click)="resendVerifyEmail()" class="text-primary" translate>user.resend_verify</a>
+                    </ng-container>
+                    <ng-template #other>
+                        {{ loginError }}
+                    </ng-template>
+                </div>
+                <form-error-messages [control]="lemail"></form-error-messages>
+            </div>
+            <!-- /EMAIL -->
+            <!-- PASSWORD -->
+            <div class="form-group">
+                <label for="lpassword" translate>user.password</label>
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">
+                            <span class="mdi mdi-lock"></span>
+                        </span>
+                    </div>
+                    <input type="password" id="lpassword" formControlName="lpassword" class="form-control"
+                    [ngClass]="{'is-valid':lpassword.valid && (lpassword.dirty || lpassword.touched),
+                    'is-invalid': (lpassword.invalid || loginError) && (lpassword.dirty || lpassword.touched)}">
+                </div>
+                <form-error-messages [control]="lpassword"></form-error-messages>
+            </div>
+            <!-- /PASSWORD -->
+            <!-- REMEMBER ME CHECKBOX -->
+            <div class="form-group form-check">
+                <input type="checkbox"  id="remember" formControlName="remember" class="form-check-input">
+                <label for="remember" class="form-check-label" translate>user.remember</label>
+            </div>
+            <!-- /REMEMBER ME CHECKBOX -->
+            <!-- SUBMIT BTN -->
+            <button type="submit" class="btn btn-primary"
+            [disabled]="loginForm.invalid" translate>
+                user.login
+            </button>
+            <!-- /SUBMIT BTN -->
+        </form>
+        <!-- FORGOTTEN PASSWORD BTN -->
+        <div class="text-right">
+            <button class="btn btn-link text-primary" type="button" 
+            (click)="forgottenPassword = true" translate>
+                user.forgotten_password
+            </button>
+        </div>
+        <!-- /FORGOTTEN PASSWORD BTN -->
+    </ng-container>
+    <!-- /LOGIN -->
+    <ng-template #forgotten>
+        <!-- BACK BTN -->
+        <div>
+            <button class="btn btn-link text-dark mdi mdi-arrow-left" type="button"
+            (click)="forgottenPassword = false" translate>
+                miscellaneous.back
+            </button>
+        </div>
+        <!-- /BACK BTN -->
+        <app-forgotten-password></app-forgotten-password>
+    </ng-template>
+</div>

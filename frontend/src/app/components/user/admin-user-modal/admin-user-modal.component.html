@@ -1,0 +1,42 @@
+<div class="modal-content animated fadeIn faster">
+    <!-- MODAL HEADER -->
+    <div class="modal-header">
+        <!-- update or register -->
+        <ng-container *ngIf="id; else itsRegister"> <!-- update -->
+            <h3 translate>user.update</h3>
+        </ng-container>
+        <ng-template #itsRegister> <!-- register -->
+            <h3 translate>user.register</h3>
+        </ng-template>
+        <button type="button" class="close" (click)="activeModal.dismiss()" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        <input type="text" class="d-none" ngbAutofocus>
+        <!-- 
+            trick for "remove" autofocus, it has some double clicks problems
+            https://stackoverflow.com/questions/53613974/angular7-and-ngbmodal-how-to-remove-default-auto-focus
+        -->
+    </div>
+    <!-- /MODAL HEADER -->
+    <!-- MODAL BODY -->
+    <div class="modal-body" #modalBody>
+        <div *ngIf="id; else registerForm">
+            <app-update-user-as-admin (updated)="anUpdate($event)" (close)="close()" (scrollToTop)="scrollToTop()" [id]="id"></app-update-user-as-admin>
+        </div>
+        <ng-template #registerForm>
+            <app-register (registered)="close()"></app-register>
+        </ng-template>
+    </div>
+    <!-- /MODAL BODY -->
+    <!-- MODAL FOOTER -->
+    <div *ngIf="id" class="modal-footer">
+        <!-- CLOSE BTN -->
+        <div class="col-12">
+            <button type="button" class="btn btn-primary" (click)="activeModal.dismiss()" translate>
+                miscellaneous.close
+            </button>
+        </div>
+        <!-- /CLOSE BTN -->
+    </div>
+    <!-- /MODAL FOOTER -->
+</div>

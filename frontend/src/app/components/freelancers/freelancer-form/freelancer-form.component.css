@@ -1,0 +1,13 @@
+.badge-pill {
+    font-size: 16px;
+}
+
+#skillsList {
+    list-style-type: none;
+}
+
+.repeated {
+    margin-top: -14px;
+    margin-bottom: 16px;
+    display: block;
+}

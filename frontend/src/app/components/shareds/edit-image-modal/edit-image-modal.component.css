@@ -1,0 +1,50 @@
+.picture_div {
+    width: 260px;
+    height: 260px;
+}
+
+.preview-category {
+    width: 270px;
+    height: 59px;
+}
+
+.preview-portfolio-image {
+    width: 270px;
+    height: 160px;
+}
+
+/* Medium devices (tablets, 768px and up) */
+@media (min-width: 768px) {
+    .picture_div {
+        width: 200px;
+        height: 200px;
+    }
+
+    .preview-category {
+        width: 450px;
+        height: 98px;
+    }
+
+    .preview-portfolio-image {
+        width: 210px;
+        height: 125px;
+    }
+}
+  
+/* Extra large devices (large desktops, 1200px and up) */
+@media (min-width: 1200px) {
+    .picture_div {
+        width: 250px;
+        height: 250px;
+    }
+
+    .preview-category {
+        width: 440px;
+        height: 96px;
+    }
+
+    .preview-portfolio-image {
+        width: 260px;
+        height: 154px;
+    }
+}

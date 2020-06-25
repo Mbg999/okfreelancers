@@ -1,0 +1,74 @@
+<div class="card animated fadeIn" [ngClass]="{'m-0': noMargin}">
+    <!-- CARD BODY -->
+    <div class="card-body">
+        <div class="container-fluid">
+            <div class="row">
+                <div *ngIf="hideLogo; else showLogo" class="col-12">
+                    <!-- TITLE -->
+                    <h5 class="card-title text-center">{{project.title}}</h5>
+                    <!-- /TITLE -->
+                </div>
+                <ng-template #showLogo>
+                    <div class="col-12 border-bottom mb-2">
+                        <p class="text-center small font-weight-bold pb-1 m-0">{{project.company_name}}</p>
+                    </div>
+                    <div class="col-4 p-0">
+                        <img [src]="project.company_logo | image:'companies/logos'" class="w-100 rounded" [alt]="project.company_name">
+                    </div>
+                    <div class="col-8 p-0 pl-2">
+                        <!-- TITLE -->
+                        <h5 class="card-title">{{project.title}}</h5>
+                        <!-- /TITLE -->
+                    </div>
+                </ng-template>
+                <div class="col-12 p-0">
+                    <!-- CATEGORIES -->
+                    <div *ngIf="project.categories?.length > 0" class="pt-2 mt-2 border-top">
+                        <small class="d-block" translate>categories.categories</small>
+                        <span *ngFor="let category of project.categories" class="badge badge-pill badge-success py-1 mr-1 pointer"
+                        [ngStyle]="{'color':category.title_color, 'background-color':category.background_color}"
+                        [title]="category.description" [routerLink]="['/category',category.name]">{{category.name}}</span>
+                    </div>
+                    <!-- /CATEGORIES -->
+                    <!-- SKILLS -->
+                    <div *ngIf="project.skills?.length > 0" class="pt-2">
+                        <small class="d-block" translate>skills.skills</small>
+                        <span *ngFor="let skill of project.skills" class="badge badge-pill badge-primary py-1 mr-1 pointer"
+                        [ngStyle]="{'color':skill.title_color, 'background-color':skill.background_color}"
+                        [title]="skill.description" [routerLink]="['/skill',skill.name]">{{skill.name}}</span>
+                    </div>
+                    <!-- /SKILLS -->
+                    <!-- ITS FINISHED -->
+                    <div *ngIf="itsMyProject && project.finished" class="pt-2 text-danger">
+                        <span class="mdi mdi-progress-check" translate> projects.finished</span>
+                    </div>
+                    <!-- /ITS FINISHED -->
+                    <!-- ITS DEACTIVATED -->
+                    <div *ngIf="itsMyProject && !project.finished && !project.ban && project.deleted_at" class="pt-2 text-danger">
+                        <span class="mdi mdi-eye-off" translate> projects.deactivated</span>
+                    </div>
+                    <!-- /ITS DEACTIVATED -->
+                    <!-- ITS BANNED -->
+                    <div *ngIf="itsMyProject && project.ban" class="pt-2 text-danger">
+                        <span class="mdi mdi-account-cancel" translate> projects.its_banned</span>
+                    </div>
+                    <!-- /ITS BANNED -->
+                    <!-- VIEW -->
+                    <hr>
+                    <button *ngIf="itsMyProject; else normalLink" class="btn btn-link btn-block text-center"
+                    [routerLink]="['/MyCompany/projects',project.id,'show']" translate>
+                        miscellaneous.view
+                    </button>
+                    <ng-template #normalLink>
+                        <button class="btn btn-link btn-block text-center"
+                        [routerLink]="['/company/project',project.id]" translate>
+                            miscellaneous.view
+                        </button>
+                    </ng-template>
+                    <!-- /VIEW -->
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /CARD BODY -->
+</div>

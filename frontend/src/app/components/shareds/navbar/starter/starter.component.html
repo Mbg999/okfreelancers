@@ -1,0 +1,15 @@
+<!-- LINKS LEFT -->
+<ul class="navbar-nav">
+    <li class="nav-item d-lg-none d-xl-inline-block">
+        <span class="welcome-msg nav-link">
+            <b translate>welcome_to_OkFreelancers</b>
+        </span>
+    </li>
+    <li class="nav-item" (click)="collapsed.emit(true)">
+        <a routerLink="/MyCompany/create" class="nav-link" translate>companies.create_sort</a>
+    </li>
+    <li class="nav-item" (click)="collapsed.emit(true)">
+        <a routerLink="/MyFreelancerProfiles/create" class="nav-link" translate>freelancers.create_sort</a>
+    </li>
+</ul>
+<!-- /LINKS LEFT -->

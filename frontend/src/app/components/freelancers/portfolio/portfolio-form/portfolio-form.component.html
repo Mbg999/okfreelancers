@@ -1,0 +1,81 @@
+<ng-container *ngIf="portfolio_type; else noPortfolio">
+    <p [translateParams]="{ type: 'freelancers.portfolio.'+portfolio_type | translate }" translate>freelancers.portfolio.consists_of</p>
+    <p translate>freelancers.portfolio.optional_fields</p>
+    <div class="card-deck">
+        <div *ngFor="let i of [0,1,2]" class="card">
+            <app-upload-file
+            [file]="portfolio[i]?.file"
+            [freelancer_picture]="freelancer_picture"
+            [type]="portfolio_type"
+            [clear]="clear[i]"
+            [imageType]="'image'"
+            [imagePipe]="'portfolios/images'"
+            [imageSizeType]="'portfolio'"
+            [audioPipe]="'portfolios/audios'"
+            [videoPipe]="'portfolios/videos'"
+            [autoQuality]="true"
+            [fileError]="fileError[i]"
+            (add)="addFile(i, $event)"
+            (remove)="removeFile(i)"
+            (clean)="clear[i] = false"></app-upload-file>
+            <div class="card-body">
+                <form [formGroup]="portfolioForm[i]" novalidate>
+                <!-- TITLE -->
+                <div class="form-group">
+                    <label [for]="'title'+i" translate>miscellaneous.title</label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">
+                                <span class="mdi mdi-rename-box"></span>
+                            </span>
+                        </div>
+                        <input type="text" [id]="'title'+i" formControlName="title" class="form-control"
+                        [ngClass]="{'is-valid':title(i).valid && (title(i).dirty || title(i).touched),
+                        'is-invalid': title(i).invalid && (title(i).dirty || title(i).touched)}">
+                    </div>
+                    <form-error-messages [control]="title(i)"></form-error-messages>
+                </div>
+                <!-- /TITLE -->
+                <!-- DESCRIPTION -->
+                <div class="form-group">
+                    <label [for]="'description'+i" translate>miscellaneous.description</label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">
+                                <span class="mdi mdi-file-document-edit-outline"></span>
+                            </span>
+                        </div>
+                        <textarea [id]="'description'+i" formControlName="description" class="form-control"
+                        [ngClass]="{'is-valid':description(i).valid && (title(i).dirty || title(i).touched),
+                        'is-invalid': description(i).invalid && (description(i).dirty || description(i).touched)}">
+                        </textarea>
+                    </div>
+                    <form-error-messages [control]="description(i)"></form-error-messages>
+                </div>
+                <!-- /DESCRIPTION -->
+                <!-- REMOVE BTN -->
+                <button *ngIf="portfolio[i]" type="button" class="btn btn-dark" (click)="removePortfolio(i)">
+                    <span class="mdi mdi-trash" translate> miscellaneous.remove</span>
+                </button>
+                <!-- /REMOVE BTN -->
+                <!-- RESTORE BTN -->
+                <button *ngIf="removedPortfolio[i]" type="button" class="btn btn-primary" (click)="restorePortfolio(i)">
+                    <span class="mdi mdi-undo" translate> miscellaneous.undo</span>
+                </button>
+                <!-- /RESTORE BTN -->
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- SAVE BTN -->
+    <button type="button" class="btn btn-primary mt-2"
+    [disabled]="checkSaveButton()" (click)="save()"> <!-- i shouldn't call functions from template -->
+        <span class="mdi mdi-save" translate> miscellaneous.update</span>
+    </button>
+    <!-- /SAVE BTN -->
+</ng-container>
+<ng-template #noPortfolio>
+    <div>
+        <p translate>freelancers.portfolio.no_portfolio_category</p>
+    </div>
+</ng-template>

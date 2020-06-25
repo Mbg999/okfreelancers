@@ -1,0 +1,186 @@
+<div>
+    <form [formGroup]="projectForm" (submit)="send()" novalidate>
+        <!-- PROJECT INFO -->
+        <div>
+            <h4 translate>projects.info</h4>
+            <!-- TITLE -->
+            <div class="form-group">
+                <label for="title" translate>miscellaneous.title</label>
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">
+                            <span class="mdi mdi-format-title"></span>
+                        </span>
+                    </div>
+                    <input type="text" id="title" formControlName="title" class="form-control"
+                    [ngClass]="{'is-valid':title.valid && (title.dirty || title.touched),
+                    'is-invalid': title.invalid && (title.dirty || title.touched)}">
+                </div>
+                <form-error-messages [control]="title"></form-error-messages>
+            </div>
+            <!-- /TITLE -->
+            <!-- DESCRIPTION -->
+            <div class="form-group">
+                <label for="description" translate>miscellaneous.description</label>
+                <p-editor id="description" formControlName="description" [style]="{'height':'320px'}"
+                [p-editor-model]="editor" #editor></p-editor>
+                <form-error-messages [control]="description"></form-error-messages>
+            </div>
+            <!-- /DESCRIPTION -->
+            <!-- BUDGET -->
+            <div class="form-group">
+                <label for="budget" translate>projects.budget</label>
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">
+                            <span class="mdi mdi-currency-eur"></span>
+                        </span>
+                    </div>
+                    <input type="number" id="budget" formControlName="budget" class="form-control"
+                    [ngClass]="{'is-valid':budget.valid && (budget.dirty || budget.touched),
+                    'is-invalid': budget.invalid && (budget.dirty || budget.touched)}">
+                </div>
+                <form-error-messages [control]="budget"></form-error-messages>
+            </div>
+            <!-- /BUDGET -->
+            <!-- ADVERTISABLE -->
+            <div class="form-group form-check">
+                <input type="checkbox" id="advertisable" formControlName="advertisable" value="1"
+                class="form-check-input">
+                <label for="advertisable" class="form-check-label" translate>freelancers.advertisable</label>
+            </div>
+            <!-- /ADVERTISABLE -->
+            <!-- SELECTED CATEGORIES -->
+            <hr>
+            <h4 translate>categories.categories</h4>
+            <div *ngIf="selectedCats?.length > 0" class="form-group">
+                <label translate>categories.selected</label>
+                <div>
+                    <span class="badge badge-pill badge-primary p-2 m-1"
+                    *ngFor="let cat of selectedCats; let i = index"
+                    [title]="cat.description">
+                        {{cat.name}} 
+                        <span class="mdi mdi-close-thick" (click)="removeCategory(i)"></span>
+                    </span>
+                </div>
+            </div>
+            <!-- /SELECTED CATEGORIES -->
+            <!-- CATEGORY -->
+            <div class="form-group">
+                <label for="category" translate>categories.category</label>
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">
+                            <span class="mdi mdi-label-multiple"></span>
+                        </span>
+                    </div>
+                    <select id="category" class="form-control" (change)="getSubcategoriesFromRoot($event.target.value)">
+                        <option value="" translate>categories.select_category</option>
+                        <option *ngFor="let cat of categories; let i = index" [value]="i" [title]="cat.description">
+                            {{cat.name}}
+                        </option>
+                    </select>
+                </div>
+            </div>
+            <!-- /CATEGORY -->
+            <!-- SUBCATEGORIES -->
+            <div class="form-group" *ngFor="let scat of subcategories;let idx = index">
+                <label [for]="'subcategory'+idx" translate>categories.subcategory</label>
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">
+                            <span class="mdi mdi-label-multiple-outline"></span>
+                        </span>
+                    </div>
+                    <select [id]="'subcategory'+idx" class="form-control" (change)="getSubcategories(idx, $event.target.value)">
+                        <option value="" translate>categories.select_subcategory</option>
+                        <option *ngFor="let cat of scat; let i = index" [value]="i" [title]="cat.description">
+                            {{cat.name}}
+                        </option>
+                    </select>
+                </div>
+            </div>
+            <!-- /SUBCATEGORIES -->
+            <!-- CATEGORY ERROR -->
+            <small *ngIf="catErr" class="text-danger err">{{catErr}}</small>
+            <!-- /CATEGORY ERROR -->
+            <button type="button" class="btn btn-primary btn-sm mb-2" [disabled]="!this.selectedCat" (click)="addCategory()">
+                <span class="mdi mdi-plus" translate> categories.add</span>
+            </button>
+            <!-- SKILLS -->
+            <div *ngIf="originalSkills?.length > 0 || selectedSkills?.length > 0">
+                <hr>
+                <h4 translate>skills.skills</h4>
+                <!-- SELECTED SKILLS -->
+                <div *ngIf="selectedSkills?.length > 0" class="form-group">
+                    <label translate>skills.selected</label>
+                    <div>
+                        <span class="badge badge-pill badge-primary p-2 m-1"
+                        *ngFor="let skill of selectedSkills; let i = index"
+                        [title]="skill.description">
+                            {{skill.name}} 
+                            <span class="mdi mdi-close-thick" (click)="removeSkill(i)"></span>
+                        </span>
+                    </div>
+                </div>
+                <!-- /SELECTED SKILLS -->
+                <!-- SKILLS SELECT -->
+                <div *ngIf="originalSkills && originalSkills.length > 0" class="form-group">
+                    <label for="skill" translate>skills.select</label>
+                    <div>
+                        <!-- SEARCHBAR -->
+                        <div class="input-group w-100 position-relative searchBar">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">
+                                    <span class="mdi mdi-card-search"></span>
+                                </span>
+                            </div>
+                            <input class="form-control" id="searchBar" type="text" #s (keyup)="search(s.value)" (keyup.enter)="selectSkill()"
+                            [placeholder]="'miscellaneous.search' | translate" aria-label="Search"
+                            (focus)="showSkillsList = true" autocomplete="off">
+                            <span class="mdi mdi-close-thick" [ngClass]="{'d-none':s.value.length < 1}"
+                            (click)="clearSearchBar(s)"></span>
+                            <div class="input-group-apend">
+                                <span class="input-group-text" (click)="showSkillsList = !showSkillsList">
+                                    <span *ngIf="showSkillsList; else shrinkSkillList" class="mdi mdi-unfold-less-horizontal"
+                                    [title]="'miscellaneous.shrink_list' | translate"></span>
+                                    <ng-template #shrinkSkillList>
+                                        <span class="mdi mdi-unfold-more-horizontal"
+                                        [title]="'miscellaneous.expand_list' | translate"></span>
+                                    </ng-template>
+                                </span>
+                            </div>
+                        </div>
+                        <!-- /SEARCHBAR -->
+                        <!-- SKILLS LIST -->
+                        <div *ngIf="showSkillsList" class="bg-primary text-light">
+                            <ul id="skillsList">
+                                <ng-container *ngIf="skills?.length > 0; else noSkills">
+                                    <li *ngFor="let skill of skills; let i = index"
+                                    [value]="skill.id" [title]="skill.description" (click)="selectSkill(i)">
+                                        {{skill.name}}
+                                    </li>
+                                </ng-container>
+                                <ng-template #noSkills>
+                                    <li translate>skills.no_skills</li>
+                                </ng-template>
+                            </ul>
+                        </div>
+                        <!-- /SKILLS LIST -->
+                    </div>
+                </div>
+                <!-- SKILLS SELECT -->
+            </div>
+            <!-- /SKILLS -->
+        </div>
+        <!-- PROJECT INFO -->
+        <!-- SUBMIT BTN -->
+        <div class="mt-3">
+            <button type="submit" class="btn btn-primary"
+            [disabled]="projectForm.invalid" translate>
+                {{(project) ? 'miscellaneous.update' : 'miscellaneous.create'}}
+            </button>
+        </div>
+        <!-- /SUBMIT BTN -->
+    </form>
+</div>

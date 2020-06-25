@@ -1,0 +1,16 @@
+<div class="text-center animated fadeIn">
+    <ng-container *ngIf="!msg; else done">
+        <img src="assets/images/loading_2.gif" class="w-50 mx-auto" [title]="'dialog.loading' | translate" 
+        [alt]="'dialog.loading' | translate">
+    </ng-container>
+    <ng-template #done>
+        <ng-container *ngIf="ok; else err">
+            <span class="mdi mdi-email-check-outline text-success"></span>
+        </ng-container>
+        <ng-template #err>
+            <span class="mdi mdi-close-circle-outline text-danger"></span>
+        </ng-template>
+        <p [ngClass]="{'text-success': ok, 'text-danger': !ok}">{{msg}}</p>
+        <p>{{countdown}}...</p>
+    </ng-template>
+</div>

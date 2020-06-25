@@ -1,0 +1,17 @@
+<!-- LINKS RIGHT -->
+<ul class="navbar-nav w-100 justify-content-end">
+    <li class="nav-item" (click)="collapsed.emit(true)">
+        <a class="nav-link" role="button" (click)="openUserAuthModal(true)"
+        translate>
+            user.login
+        </a>
+    </li>
+    <!-- Button trigger modal -->
+    <li class="nav-item" (click)="collapsed.emit(true)">
+        <a class="nav-link" role="button" (click)="openUserAuthModal(false)"
+        translate>
+            user.signup
+        </a>
+    </li>
+</ul>
+<!-- /LINKS RIGHT -->

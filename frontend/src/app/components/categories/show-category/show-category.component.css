@@ -1,0 +1,5 @@
+.jumbotron {
+    background-size: cover;
+    background-blend-mode: hard-light;
+    background-color: rgba(26,26,26,.2); /* better effect for blend-mode */
+}

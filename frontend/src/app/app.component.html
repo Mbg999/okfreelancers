@@ -1,0 +1,15 @@
+<div id="main-container" class="animated fadeIn">
+  <header class="sticky-top">
+    <app-navbar></app-navbar>
+  </header>
+  <main class="container pt-3 pb-6">
+    <router-outlet></router-outlet>
+    <app-toasts></app-toasts>
+  </main>
+  <footer class="bg-dark text-light p-3">
+    <app-consent-cookies *ngIf="!consentedCookies"
+    (consented)="consentedCookies = true"></app-consent-cookies>
+    <app-footer></app-footer>
+  </footer>
+</div>
+

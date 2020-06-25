@@ -1,0 +1,85 @@
+<div *ngIf="itsReady; else loading" class="animated fadeIn">
+    <div *ngIf="action == 'create' || action == 'edit'; else show">
+        <!-- CREATE -->
+        <div *ngIf="stage; else itsUpdate">
+            <div *ngIf="stage == 1; else stage2">
+                <p translate>freelancers.create</p>
+                <app-freelancer-form [repeated]="repeated" (result)="create($event)"></app-freelancer-form>
+            </div>
+            <ng-template #stage2>
+                <p class="text-success">
+                    <span translate>freelancers.created</span>. 
+                    <span translate>freelancers.lets_create_portfolio</span>
+                </p>
+                <app-portfolio-form
+                [portfolio]="freelancer.portfolio"
+                [freelancer_picture]="freelancer.picture"
+                [portfolio_type]="freelancer.portfolio_type"
+                [fileError]="fileError"
+                (result)="updatePortfolio($event)"></app-portfolio-form>
+                <div class="mt-2 text-center">
+                    <button class="btn btn-link text-success" [routerLink]="['/MyFreelancerProfiles',freelancer.id,'show']" translate>miscellaneous.skip</button>
+                </div>
+            </ng-template>
+        </div>
+        <!-- /CREATE -->
+        <!-- EDIT -->
+        <ng-template #itsUpdate>
+            <!-- ACTION BUTTONS -->
+            <div class="btn-group mb-3" role="group" aria-label="Action buttons">
+                <!-- SHOW -->
+                <button (click)="takeAction('show')" class="btn btn-primary">
+                    <span class="mdi mdi-eye" translate> miscellaneous.show</span>
+                </button>
+                <!-- /SHOW -->
+                <!-- ACTIVATE -->
+                <button *ngIf="freelancer.deleted_at; else deactivateBtn" type="button" class="btn btn-success" (click)="activate()">
+                    <span class="mdi mdi-eye-check" translate> miscellaneous.activate_profile</span>
+                </button>
+                <!-- /ACTIVATE -->
+                <!-- DEACTIVATE -->
+                <ng-template #deactivateBtn>
+                    <button type="button" class="btn btn-danger" (click)="deactivate()">
+                        <span class="mdi mdi-eye-off" translate> miscellaneous.deactivate_profile</span>
+                    </button>
+                </ng-template>
+                <!-- /DEACTIVATE -->
+                <!-- DELETE -->
+                <button type="button" class="btn btn-dark" (click)="delete()" translate>
+                    <span class="mdi mdi-trash-can-outline" translate> miscellaneous.delete_profile</span>
+                </button>
+                <!-- /DELETE -->
+            </div>
+            <!-- /ACTION BUTTONS -->
+            <app-freelancer-form [freelancer]="freelancer" [repeated]="repeated" (result)="update($event)"></app-freelancer-form>
+            <hr class="my-4">
+            <h3>Portfolio</h3>
+            <app-portfolio-form
+                [portfolio]="freelancer.portfolio"
+                [freelancer_picture]="freelancer.picture"
+                [portfolio_type]="freelancer.portfolio_type"
+                [fileError]="fileError"
+                (result)="updatePortfolio($event)"></app-portfolio-form>
+        </ng-template>
+        <!-- EDIT -->
+    </div>
+    <ng-template #show>
+        <div *ngIf="freelancer.ban; else editable">
+            <p class="alert alert-danger mb-2">
+                <b><span translate>miscellaneous.banned_profile</span>:</b>
+                <span class="d-block">"{{ freelancer.ban_reason }}"</span>
+                <span translate>miscellaneous.banned_profile_info</span>
+            </p>
+        </div>
+        <ng-template #editable>
+            <button (click)="takeAction('edit')" class="btn btn-warning mb-2">
+                <span class="mdi mdi-lead-pencil" translate> miscellaneous.edit</span>
+            </button>
+            <p *ngIf="freelancer.deleted_at"><small class="text-danger" translate>miscellaneous.is_deactivated_profile</small></p>
+        </ng-template>
+        <app-show-freelancer [freelancer]="freelancer" [user]="user"></app-show-freelancer>
+    </ng-template>
+</div>
+<ng-template #loading>
+    <h1 class="mdi mdi-circle-half mdi-spin mdi-48px" translate> dialog.loading</h1>
+</ng-template>

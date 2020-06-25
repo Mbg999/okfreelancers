@@ -1,0 +1,12 @@
+<div class="position-relative">
+    <img [src]="img" class="card-img-top">
+    <div class="position-absolute audio_overlay" [ngClass]="{'audio_overlay_effect': ready}">
+        <div *ngIf="ready" class="d-flex justify-content-center align-items-center h-100 audio_btns"
+        (click)="togglePlay()">
+            <span *ngIf="player.paused; else play" class="mdi mdi-play-circle-outline h-50" [ngClass]="{'side_btns': side_btns}" title="Play"></span>
+            <ng-template #play>
+                <span class="mdi mdi-pause-circle-outline h-50" [ngClass]="{'side_btns': side_btns}" title="Pause"></span>
+            </ng-template>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,126 @@
+<div class="card animated fadeIn" [style.background-color]="bgColor">
+    <!-- CAROUSEL -->
+    <div [ngSwitch]="freelancer.portfolio_type">
+        <div *ngSwitchCase="'image'">
+            <ngb-carousel [interval]="0">
+                <!-- PICTURE -->
+                <ng-template ngbSlide>
+                    <div class="picsum-img-wrapper">
+                        <img [src]="freelancer.picture | image:'freelancers/pictures'" class="card-img-top" alt="picture" title="picture">
+                    </div>
+                </ng-template>
+                <!-- /PICTURE -->
+                <ng-template *ngFor="let portfolio of freelancer.portfolio" ngbSlide>
+                    <div class="picsum-img-wrapper">
+                        <img [src]="portfolio.file | image:'portfolios/images'" class="card-img-top" [alt]="portfolio.title" [title]="portfolio.title">
+                    </div>
+                    <div *ngIf="showTitle" class="carousel-caption">
+                        <h4>{{portfolio.title}}</h4>
+                    </div>
+                </ng-template>
+            </ngb-carousel>
+        </div>
+        <!-- /PORTFOLIO TYPE IMAGE -->
+        <!-- PORTFOLIO TYPE AUDIO -->
+        <div *ngSwitchCase="'audio'">
+            <ngb-carousel [interval]="0">
+                <!-- PICTURE -->
+                <ng-template *ngIf="freelancer.portfolio.length < 1" ngbSlide>
+                    <div class="picsum-img-wrapper">
+                        <img [src]="freelancer.picture | image:'freelancers/pictures'" class="card-img-top" alt="picture" title="picture">
+                    </div>
+                </ng-template>
+                <!-- /PICTURE -->
+                <ng-template *ngFor="let portfolio of freelancer.portfolio" ngbSlide>
+                    <div class="picsum-img-wrapper">
+                        <app-audio [img]="freelancer.picture | image:'freelancers/pictures'" [audio]="portfolio.file | audio:'portfolios/audios'"></app-audio>
+                    </div>
+                    <div *ngIf="showTitle" class="carousel-caption">
+                        <h4>{{portfolio.title}}</h4>
+                    </div>
+                </ng-template>
+            </ngb-carousel>
+        </div>
+        <!-- /PORTFOLIO TYPE AUDIO -->
+        <!-- PORTFOLIO TYPE VIDEO -->
+        <div *ngSwitchCase="'video'">
+            <ngb-carousel [interval]="0">
+                <!-- PICTURE -->
+                <ng-template ngbSlide>
+                    <div class="picsum-img-wrapper">
+                        <img [src]="freelancer.picture | image:'freelancers/pictures'" class="card-img-top" alt="picture" title="picture">
+                    </div>
+                </ng-template>
+                <!-- /PICTURE -->
+                <ng-template *ngFor="let portfolio of freelancer.portfolio" ngbSlide>
+                    <div class="picsum-img-wrapper">
+                        <app-video [video]="portfolio.file | video:'portfolios/videos'"></app-video>
+                    </div>
+                    <div *ngIf="showTitle" class="carousel-caption">
+                        <h4>{{portfolio.title}}</h4>
+                    </div>
+                </ng-template>
+            </ngb-carousel>
+        </div>
+        <!-- /PORTFOLIO TYPE VIDEO -->
+        <!-- NO PORTFOLIO -->
+        <div *ngSwitchDefault>
+            <img [src]="freelancer.picture | image:'freelancers/pictures'" class="card-img-top" alt="picture" title="picture">
+        </div>
+        <!-- /NO PORTFOLIO -->
+    </div>
+    <!-- /CAROUSEL -->
+    <!-- CARD BODY -->
+    <div class="card-body" [style.color]="textColor">
+        <!-- TITLE -->
+        <h5 class="card-title" [style.color]="titleColor">{{freelancer.title}}</h5>
+        <!-- /TITLE -->
+        <!-- CATEGORY NAME -->
+        <a class="small pt-2" [routerLink]="['/category',freelancer.category_name]"
+        [style.color]="textColor">
+            {{freelancer.category_name}}
+        </a>
+        <!-- /CATEGORY NAME -->
+        <!-- SKILLS -->
+        <div *ngIf="freelancer.skills?.length > 0" class="pt-2">
+            <span *ngFor="let skill of freelancer.skills" class="badge badge-pill badge-primary py-1 mr-1 pointer"
+            [title]="skill.description" [ngStyle]="{'color':bgColor,'background-color':textColor}"
+            [routerLink]="['/skill',skill.name]">{{skill.name}}</span>
+        </div>
+        <!-- /SKILLS -->
+        <!-- ITS DEACTIVATED -->
+        <div *ngIf="itsMyProfile && !freelancer.ban && freelancer.deleted_at" class="pt-2 text-danger">
+            <span class="mdi mdi-eye-off" translate> miscellaneous.deactivated_profile</span>
+        </div>
+        <!-- /ITS DEACTIVATED -->
+        <!-- ITS BANNED -->
+        <div *ngIf="itsMyProfile && freelancer.ban" class="pt-2 text-danger">
+            <span class="mdi mdi-account-cancel" translate> miscellaneous.its_banned_profile</span>
+        </div>
+        <!-- /ITS BANNED -->
+        <hr [style.background-color]="titleColor">
+        <div class="overflow-y">
+            <!-- VIEW -->
+            <button *ngIf="itsMyProfile; else normalLink" class="btn btn-link text-center"
+            [routerLink]="['/MyFreelancerProfiles',freelancer.id,'show']"
+            [style.color]="textColor" translate>
+                miscellaneous.view
+            </button>
+            <ng-template #normalLink>
+                <button class="btn btn-link text-center"
+                [routerLink]="['/freelancer',freelancer.id]"
+                [style.color]="textColor" translate>
+                    miscellaneous.view
+                </button>
+            </ng-template>
+            <!-- /VIEW -->
+            <!-- APPROX FEE -->
+            <p class="text-right h6 pt-2 float-right">
+                {{freelancer.approx_fee | currency:'EUR':'symbol-narrow':null:_multilangService.activeLang}}<small>/<span translate>miscellaneous.H_hour</span></small>
+                <span class="approx" translate>miscellaneous.approx</span>
+            </p>
+            <!-- /APPROX FEE -->
+        </div>
+    </div>
+    <!-- /CARD BODY -->
+</div>

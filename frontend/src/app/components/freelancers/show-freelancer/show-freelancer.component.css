@@ -1,0 +1,15 @@
+.center {
+  position: absolute;
+  top: 50%;
+  -ms-transform: translateY(-50%);
+  transform: translateY(-50%);
+}
+
+.portfolio {
+  max-width: 800px;
+}
+
+.rate {
+  margin-top: -15px;
+  margin-bottom: 0;
+}

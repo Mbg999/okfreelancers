@@ -1,0 +1,95 @@
+<div class="modal-content animated fadeIn faster">
+    <!-- MODAL HEADER -->
+    <div class="modal-header">
+        <button type="button" class="close" (click)="activeModal.dismiss()" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        <input type="text" class="d-none" ngbAutofocus>
+        <!-- 
+            trick for "remove" autofocus, it has some double clicks problems
+            https://stackoverflow.com/questions/53613974/angular7-and-ngbmodal-how-to-remove-default-auto-focus
+        -->
+    </div>
+    <!-- /MODAL HEADER -->
+    <!-- MODAL BODY -->
+    <div class="modal-body">
+        <h2>
+            <span translate>user.currently_balance</span>
+            {{ user.balance | currency:'EUR':'symbol-narrow':null:_multilangService.activeLang }}
+        </h2>
+        <div *ngIf="checkout; else inputAmount">
+            <form *ngIf="itsWithdraw; else payment" [formGroup]="checkoutDataForm" novalidate>
+                <!-- EMAIL -->
+                <div class="form-group">
+                    <label for="email" translate>user.paypal_email</label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">
+                                <span class="mdi mdi-email"></span>
+                            </span>
+                        </div>
+                        <input type="text" id="email" formControlName="email" class="form-control"
+                        [ngClass]="{'is-valid':email.valid && (email.dirty || email.touched),
+                        'is-invalid': (email.invalid || errEmail) && (email.dirty || email.touched)}">
+                    </div>
+                    <div class="alert alert-danger" *ngIf="errEmail">{{ errEmail }}</div>
+                    <form-error-messages [control]="email"></form-error-messages>
+                </div>
+                <!-- /EMAIL -->
+            </form>
+            <ng-template #payment>
+                <h3 translate>miscellaneous.payment_methods</h3>
+                <h4>PayPal</h4>
+                <ngx-paypal [config]="payPalConfig"></ngx-paypal>
+                <h4>Stripe</h4>
+                <ngx-stripe-card [options]="cardOptions" [elementsOptions]="elementsOptions"></ngx-stripe-card>
+                <small *ngIf="errMsg" class="text-danger">{{errMsg}}</small>
+            </ng-template>
+        </div>
+        <ng-template #inputAmount>
+            <form [formGroup]="amountForm" novalidate>
+                <div class="form-group">
+                    <label for="amount" translate>miscellaneous.amount</label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">
+                                <span class="mdi mdi-currency-eur"></span>
+                            </span>
+                        </div>
+                        <input type="number" step=".01" (keypress.enter)="pay()" class="form-control"
+                        id="amount" formControlName="amount" placeholder="9,99"
+                        [ngClass]="{'is-valid':amount.valid && (amount.dirty || amount.touched),
+                            'is-invalid': amount.invalid && (amount.dirty || amount.touched)}">
+                    </div>
+                    <small *ngIf="errAmount" class="text-danger">{{errAmount}}</small>
+                    <form-error-messages [control]="amount"></form-error-messages>
+                </div>
+            </form>
+        </ng-template>
+    </div>
+    <!-- /MODAL BODY -->
+    <div class="modal-footer">
+        <div *ngIf="checkout; else goCheckout" class="d-flex w-100 justify-content-between">
+            <button type="submit" class="btn btn-primary d-block"
+            (click)="checkout = false">
+                <span class="mdi mdi-arrow-left" translate> miscellaneous.back</span>
+            </button>
+            <button *ngIf="itsWithdraw; else payBtn" type="submit" class="btn btn-primary d-block"
+            (click)="withdraw()" [disabled]="amountForm.invalid">
+                <span class="mdi mdi-bank-transfer-out" translate> user.withdraw</span>
+            </button>
+            <ng-template #payBtn>
+                <button type="submit" class="btn btn-primary d-block"
+                (click)="pay()" [disabled]="amountForm.invalid">
+                    <span class="mdi mdi-shopping" translate> user.pay</span>
+                </button>
+            </ng-template>
+        </div>
+        <ng-template #goCheckout>
+            <button type="submit" class="btn btn-primary"
+            (click)="checkout = true" [disabled]="amountForm.invalid">
+                <span class="mdi mdi-arrow-right" translate> miscellaneous.checkout</span>
+            </button>
+        </ng-template>
+    </div>
+</div>

@@ -1,0 +1,187 @@
+<!-- BREADCRUMBS -->
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <!-- https://stackoverflow.com/questions/44288434/angular-2-ngfor-first-last-index-loop -->
+        <li class="breadcrumb-item" *ngFor="let branch of tree; let i = index; let last = last"
+        [ngClass]="{'active':last}">
+            <ng-container *ngIf="last; else notLast">
+                <a>{{branch}}</a>
+            </ng-container>
+            <ng-template #notLast>
+                <a (click)="breadcrumb(i)">{{branch}}</a>
+            </ng-template>
+        </li>
+    </ol>
+</nav>
+<!-- /BREADCRUMBS -->
+<!-- FATHER + TITLE + CREATE BTN -->
+<ng-container *ngIf="father; else catTitle">
+    <!-- FATHER -->
+    <div class="jumbotron cat-skill-jumbotron animated fadeIn" [style.background-image]="father.image | image:'categories':true"></div>
+    <!-- i shouldn't call functions in view, but i have no more options -->
+    <h1 class="display-4" [style.color]="father.title_color">{{getTranslatedFatherName()}}</h1>
+    <p [style.color]="father.text_color">{{getTranslatedFatherDescription()}}</p>
+    <hr class="my-2">
+    <h5 translate>miscellaneous.options</h5>
+    <div class="btn-group-vertical w-100" role="group" aria-label="Father options">
+        <!-- EDIT BTN -->
+        <button type="button" class="btn btn-warning" 
+        (click)="updateFather()">
+            <span class="mdi mdi-lead-pencil" translate> miscellaneous.edit</span>
+        </button>
+        <!-- /EDIT BTN -->
+        <!-- ACTIVATE/DEACTIVATE BTN -->
+        <ng-container *ngIf="father.deleted_at; else isActivated">
+            <button type="button" class="btn btn-success btn-block"
+            (click)="toggleDeleted_atFather()">
+                <span class="mdi mdi-eye-check" translate> miscellaneous.activate</span>
+            </button>
+        </ng-container>
+        <ng-template #isActivated>
+            <button type="button" class="btn btn-danger btn-block"
+            (click)="toggleDeleted_atFather()">
+                <span class="mdi mdi-eye-off" translate> miscellaneous.deactivate</span>
+            </button>
+        </ng-template>
+        <!-- /ACTIVATE/DEACTIVATE BTN -->
+        <!-- DELETE BTN -->
+        <button type="button" class="btn btn-dark" 
+        (click)="deleteFather()">
+            <span class="mdi mdi-trash-can-outline" translate> miscellaneous.delete</span>
+        </button>
+        <!-- /DELETE BTN -->
+    </div>
+    <!-- /FATHER -->
+    <!-- TITLE + CREATE BTN SUBCATEGORY -->
+    <hr class="bg-dark my-2">
+    <h2 class="display-4 mb-3" translate>categories.subcategories</h2>
+    <button type="button" class="btn btn-success btn-block" (click)="create()">
+        <span class="mdi mdi-plus" translate> categories.new_subcategory</span>
+    </button>
+    <!-- TITLE + CREATE BTN SUBCATEGORY -->
+</ng-container>
+<!-- TITLE + CREATE BTN CATEGORY -->
+<ng-template #catTitle>
+    <div *ngIf="originalCategories"> <!-- hide until categories finish loading -->
+        <h1 class="display-4 mb-3" translate>categories.categories</h1>
+        <button type="button" class="btn btn-success btn-block" (click)="create()">
+            <span class="mdi mdi-plus" translate> categories.new_category</span>
+        </button>
+    </div>
+</ng-template>
+<!-- /TITLE + CREATE BTN CATEGORY -->
+<!-- /FATHER + TITLE + CREATE BTN -->
+<!-- SEARCH BAR + TABLE + LOADING + NO SUBCATEGORIES -->
+<div *ngIf="originalCategories?.length > 0; else screensaver" class="animated fadeIn">
+    <!-- SEARCH BAR -->
+    <form class="form-inline">
+        <div class="input-group w-100 position-relative searchBar">
+            <div class="input-group-prepend">
+                <span class="input-group-text">
+                    <span class="mdi mdi-card-search"></span>
+                </span>
+            </div>
+            <input class="form-control" id="searchBar" type="text" #s (keyup)="search(s.value)"
+            [placeholder]="'miscellaneous.search_by_name_or_cat' | translate" aria-label="Search">
+            <span class="mdi mdi-close-thick" [ngClass]="{'d-none':s.value.length < 1}"
+            (click)="clearSearchBar(s)"></span>
+        </div>
+    </form>
+    <!-- /SEARCH BAR -->
+    <!-- TABLE -->
+    <p-table [value]="categories" [responsive]="true" [autoLayout]="true"
+    [paginator]="true" [rows]="5" [totalRecords]="categories.length"
+    [rowsPerPageOptions]="[5,10,20,30]" dataKey="id">
+        <ng-template pTemplate="header">
+            <tr>
+                <th [pSortableColumn]="'id'">
+                    ID
+                    <p-sortIcon [field]="'id'"></p-sortIcon>
+                </th>
+                <th [pSortableColumn]="'name_en'" translate>
+                    miscellaneous.name_en
+                    <p-sortIcon [field]="'name_en'"></p-sortIcon>
+                </th>
+                <th [pSortableColumn]="'name_es'" translate>
+                    miscellaneous.name_es
+                    <p-sortIcon [field]="'name_es'"></p-sortIcon>
+                </th>
+                <th [pSortableColumn]="'freelancers_count'">
+                    Freelancers
+                    <p-sortIcon [field]="'freelancers_count'"></p-sortIcon>
+                </th>
+                <th [pSortableColumn]="'projects_count'" translate>
+                    projects.projects
+                    <p-sortIcon [field]="'projects_count'"></p-sortIcon>
+                </th>
+                <th [pSortableColumn]="'deleted_at'" translate>
+                    miscellaneous.active
+                    <p-sortIcon [field]="'deleted_at'"></p-sortIcon>
+                </th>
+                <th translate>
+                    miscellaneous.options
+                </th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-category let-i="rowIndex">
+            <tr>
+                <td>{{category.id}}</td>
+                <td class="pointer" (click)="view(i)">{{category.name_en}}</td>
+                <td class="pointer" (click)="view(i)">{{category.name_es}}</td>
+                <td>{{category.freelancers_count}}</td>
+                <td>{{category.projects_count}}</td>
+                <td>
+                    <ng-container *ngIf="category.deleted_at; else Activated">
+                        <p class="text-danger" translate>miscellaneous.currently_deactived</p>
+                        <button type="button" class="btn btn-success btn-block"
+                        (click)="toggleDeleted_at(i)">
+                            <span class="mdi mdi-eye-check" translate> miscellaneous.activate</span>
+                        </button>
+                    </ng-container>
+                    <ng-template #Activated>
+                        <p class="text-success" translate>miscellaneous.currently_actived</p>
+                        <button type="button" class="btn btn-danger btn-block"
+                        (click)="toggleDeleted_at(i)">
+                            <span class="mdi mdi-eye-off" translate> miscellaneous.deactivate</span>
+                        </button>
+                    </ng-template>
+                </td>
+                <td>
+                    <div class="btn-group-vertical w-100" role="group" aria-label="Options">
+                        <button type="button" class="btn btn-primary"
+                        (click)="view(i)">
+                            <span class="mdi mdi-eye" translate> miscellaneous.view</span>
+                        </button>
+                        <button type="button" class="btn btn-warning" 
+                        (click)="update(i)">
+                            <span class="mdi mdi-lead-pencil" translate> miscellaneous.edit</span>
+                        </button>
+                        <button type="button" class="btn btn-dark" 
+                        (click)="delete(i)">
+                            <span class="mdi mdi-trash-can-outline" translate> miscellaneous.delete</span>
+                        </button>
+                    </div>
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+</div>
+<!-- /TABLE -->
+<!-- LOADING + NO SUBCATEGORIES -->
+<ng-template #screensaver>
+    <!-- NO SUBCATEGORIES -->
+    <ng-container *ngIf="originalCategories; else loading">
+        <h5 *ngIf="father; else noCategories" translate>categories.no_subcategories</h5>
+        <ng-template #noCategories>
+            <h5 translate>categories.no_categories</h5>
+        </ng-template>
+    </ng-container>
+    <!-- /NO SUBCATEGORIES -->
+    <!-- LOADING -->
+    <ng-template #loading>
+        <h1 class="mdi mdi-circle-half mdi-spin mdi-48px" translate> dialog.loading</h1>
+    </ng-template>
+    <!-- /LOADING -->
+</ng-template>
+<!-- /LOADING + NO SUBCATEGORIES -->
+<!-- /SEARCH BAR + TABLE + LOADING + NO SUBCATEGORIES -->

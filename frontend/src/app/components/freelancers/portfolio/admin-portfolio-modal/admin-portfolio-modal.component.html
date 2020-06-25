@@ -1,0 +1,41 @@
+<div class="modal-content animated fadeIn faster">
+    <!-- MODAL HEADER -->
+    <div class="modal-header">
+        <h3>Portfolio</h3>
+        <button type="button" class="close" (click)="activeModal.dismiss()" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        <input type="text" class="d-none" ngbAutofocus>
+        <!-- 
+            trick for "remove" autofocus, it has some double clicks problems
+            https://stackoverflow.com/questions/53613974/angular7-and-ngbmodal-how-to-remove-default-auto-focus
+        -->
+    </div>
+    <!-- /MODAL HEADER -->
+    <!-- MODAL BODY -->
+    <div class="modal-body" #modalBody>
+        <app-portfolio-form *ngIf="portfolio; else loading"
+        [portfolio]="portfolio"
+        [freelancer_picture]="freelancer_picture"
+        [portfolio_type]="portfolio_type"
+        [fileError]="fileError"
+        (result)="update($event)"></app-portfolio-form>
+        <!-- LOADING -->
+        <ng-template #loading>
+            <h1 class="mdi mdi-circle-half mdi-spin mdi-48px" translate> dialog.loading</h1>
+        </ng-template>
+        <!-- /LOADING -->
+    </div>
+    <!-- /MODAL BODY -->
+    <!-- MODAL FOOTER -->
+    <div class="modal-footer">
+        <!-- SUBMIT BTN -->
+        <div class="col-12">
+            <button type="button" class="btn btn-primary" (click)="activeModal.close()" translate>
+                miscellaneous.close
+            </button>
+        </div>
+        <!-- /SUBMIT BTN -->
+    </div>
+    <!-- /MODAL FOOTER -->
+</div>

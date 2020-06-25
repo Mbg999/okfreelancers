@@ -1,0 +1,63 @@
+<div class="card">
+    <div class="card-body">
+        <div class="container-fluid">
+            <!-- FREELANCER INFO -->
+            <div class="row pointer" [routerLink]="['/freelancer', offer.freelancer_id]">
+                <div class="col-12 col-md-4 col-xl-3 text-center mb-2">
+                    <img class="w-100 rounded picture" [src]="offer.freelancer_picture | image:'freelancers/pictures'"
+                    [alt]="'miscellaneous.image' | translate">
+                </div>
+                <div class="col-12 col-md-8 col-xl-9">
+                    <h5 class="card-title">{{offer.freelancer_title}}</h5>
+                    <small class="card-text">
+                        <span translate>categories.category</span>: {{offer.category_name}}
+                        <span *ngIf="offer.created_at != offer.updated_at; else showCreated_at" class="d-block">
+                            <span translate>miscellaneous.updated_at</span>: 
+                            {{offer.updated_at | date:'dd MMMM yyyy':null:_multilangService.activeLang}}
+                        </span>
+                        <ng-template #showCreated_at>
+                            <span class="d-block">
+                                <span translate>miscellaneous.date</span>: 
+                                {{offer.created_at | date:'dd MMMM yyyy':null:_multilangService.activeLang}}
+                            </span>
+                        </ng-template>
+                    </small>
+                </div>
+            </div>
+            <!-- /FREELANCER INFO -->
+            <!-- OFFER -->
+            <div class="row">
+                <div class="col-12">
+                    <p class="d-lg-flex justify-content-lg-between my-2 pt-2 border-top">
+                        <small class="d-block">
+                            <span translate>offers.price</span>: 
+                            <b class="d-lg-block">{{offer.price | currency:'EUR':'symbol-narrow':null:_multilangService.activeLang}}</b>
+                        </small>
+                        <small class="d-block">
+                            <span translate>offers.approx_hours</span>: 
+                            <b class="d-lg-block">{{offer.approx_hours}} <span translate>miscellaneous.hours</span></b>
+                        </small>
+                        <small class="d-block">
+                            <span translate>offers.aprox_total_price</span>: 
+                            <b class="d-lg-block">{{offer.price * offer.approx_hours | currency:'EUR':'symbol-narrow':null:_multilangService.activeLang}}</b>
+                        </small>
+                        <small class="d-block">
+                            <span translate>offers.approx_term</span>: 
+                            <b class="d-lg-block">{{offer.approx_term}} <span translate>miscellaneous.days</span></b>
+                        </small>
+                    </p>
+                    <h6 class="m-0 mt-4"><span translate>offers.message</span>:</h6>
+                    <div class="pt-1 edited-text" [innerHTML]="offer.message | safe:'html'"></div>
+                </div>
+                <!-- ACTION -->
+                <div class="col-12">
+                    <button type="button" class="btn btn-primary" (click)="acceptOffer.emit(true)" translate>
+                        <span class="mdi mdi-check-bold" translate> miscellaneous.accept</span>
+                    </button>
+                </div>
+                <!-- /ACTION -->
+            </div>
+            <!-- /OFFER -->
+        </div>
+    </div>
+</div>

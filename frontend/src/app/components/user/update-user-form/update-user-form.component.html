@@ -1,0 +1,339 @@
+<div class="row">
+    <div [ngClass]="{'col-12 col-md-4 col-xl-3 py-3 border-right text-center': !itsModal, 'col-12 my-3': itsModal}">
+        <div class="picture_div border border-dark rounded" (click)="picture_input.click()">
+            <div id="uploadingPicture" class="rounded" [ngClass]="{'d-flex align-items-center justify-content-center': uploadingPicture, 'd-none': !uploadingPicture}">
+                <img src="assets/images/loading_image.gif" class="w-50 h-50" [title]="'loadingDialog.loading' | translate">
+            </div>
+            <img [src]="user.picture|image:'users/pictures'" [alt]="user.name" [title]="user.name"
+            class="w-100 rounded-top">
+            <button type="button" [disabled]="uploadingPicture"
+            class="btn btn-primary btn-block" translate>
+                <span class="mdi mdi-image-edit" translate> miscellaneous.change_picture</span>
+            </button>
+            <input type="file" #picture_input class="d-none" capture="user" accept="image/png,image/jpg,image/jpeg"
+            (change)="changePic($event.target)">
+        </div>
+        <small *ngIf="pictureError" class="text-danger">{{pictureError}}</small>
+    </div>
+    <div [ngClass]="{'col-12 col-md-8 col-xl-9 py-3': !itsModal, 'col-12': itsModal}">
+        <!-- USER FORM -->
+        <form novalidate [formGroup]="userForm" (submit)="update()" class="row">
+            <!-- USER DATA -->
+            <div class="col-12 col-lg-6">
+                <h4 translate>user.data</h4>
+                <!-- EMAIL -->
+                <div class="form-group">
+                    <label for="email" translate>user.email</label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">
+                                <span class="mdi mdi-email"></span>
+                            </span>
+                        </div>
+                        <input type="text" id="email" formControlName="email" class="form-control" ngbAutofocus
+                        [ngClass]="{'is-valid':email.valid && (email.dirty || email.touched),
+                        'is-invalid': (email.invalid || takenEmail) && (email.dirty || email.touched)}">
+                    </div>
+                    <div class="alert alert-danger" *ngIf="takenEmail">{{ takenEmail }}</div>
+                    <form-error-messages [control]="email"></form-error-messages>
+                </div>
+                <!-- /EMAIL -->
+                <!-- NAME -->
+                <div class="form-group">
+                    <label for="name" translate>miscellaneous.name</label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">
+                                <span class="mdi mdi-account-details"></span>
+                            </span>
+                        </div>
+                        <input type="text" id="name" formControlName="name" class="form-control"
+                        [ngClass]="{'is-valid':name.valid && (name.dirty || name.touched),
+                        'is-invalid': name.invalid && (name.dirty || name.touched)}">
+                    </div>
+                    <form-error-messages [control]="name"></form-error-messages>
+                </div>
+                <!-- /NAME -->
+                <!-- SURNAMES -->
+                <div class="form-group">
+                    <label for="surnames" translate>user.surnames</label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">
+                                <span class="mdi mdi-account-details"></span>
+                            </span>
+                        </div>
+                        <input type="text" id="surnames" formControlName="surnames" class="form-control"
+                        [ngClass]="{'is-valid':surnames.valid && (surnames.dirty || surnames.touched),
+                        'is-invalid': surnames.invalid && (surnames.dirty || surnames.touched)}">
+                    </div>
+                    <form-error-messages [control]="surnames"></form-error-messages>
+                </div>
+                <!-- /SURNAMES -->
+                <!-- BORN_DATE -->
+                <div class="form-group">
+                    <label for="born_date" translate>user.born_date</label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">
+                                <span class="mdi mdi-calendar-month"></span>
+                            </span>
+                        </div>
+                        <input type="date" id="born_date" formControlName="born_date" class="form-control"
+                        [ngClass]="{'is-valid':born_date.valid && (born_date.dirty || born_date.touched),
+                        'is-invalid': born_date.invalid && (born_date.dirty || born_date.touched)}">
+                    </div>
+                    <form-error-messages [control]="born_date"></form-error-messages>
+                    <!-- extra errors -->
+                    <div *ngIf="born_date.errors?.tooYoung" class="text-danger">
+                        <small translate>validators.tooYoung</small>
+                    </div>
+                    <!-- /extra errors -->
+                </div>
+                <!-- /BORN_DATE -->
+                <!-- PHONE -->
+                <div class="form-group">
+                    <label for="phone" translate>user.phone</label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">
+                                <span class="mdi mdi-card-account-phone"></span>
+                            </span>
+                        </div>
+                        <input type="text" id="phone" formControlName="phone" class="form-control"
+                        [ngClass]="{'is-valid':phone.valid && (phone.dirty || phone.touched),
+                        'is-invalid': phone.invalid && (phone.dirty || phone.touched)}">
+                    </div>
+                    <form-error-messages [control]="phone"></form-error-messages>
+                </div>
+                <!-- /PHONE -->
+            </div>
+            <!-- /USER DATA -->
+            <!-- BILLING ADDRESS -->
+            <div class="col-12 col-lg-6">
+                <h4 translate>user.address_billing</h4>
+                <!-- ADDRESS -->
+                <div class="form-group">
+                    <label for="address" translate>user.address</label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">
+                                <span class="mdi mdi-folder-home"></span>
+                            </span>
+                        </div>
+                        <input type="text" id="address" formControlName="address" class="form-control"
+                        [ngClass]="{'is-valid':address.valid && (address.dirty || address.touched),
+                        'is-invalid': address.invalid && (address.dirty || address.touched)}">
+                    </div>
+                    <form-error-messages [control]="address"></form-error-messages>
+                </div>
+                <!-- /ADDRESS -->
+                <!-- ADDRESS_DESCRIPTION -->
+                <div class="form-group">
+                    <label for="address" translate>user.address_description</label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">
+                                <span class="mdi mdi-folder-home"></span>
+                            </span>
+                        </div>
+                        <textarea id="address_description" formControlName="address_description" class="form-control"
+                        [ngClass]="{'is-valid':address_description.valid && (address_description.dirty || address_description.touched),
+                        'is-invalid': address_description.invalid && (address_description.dirty || address_description.touched)}">
+                        </textarea>
+                    </div>
+                    <form-error-messages [control]="address_description"></form-error-messages>
+                </div>
+                <!-- /ADDRESS_DESCRIPTION -->
+                <!-- ZIP -->
+                <div class="form-group">
+                    <label for="zip" translate>user.zip</label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">
+                                <span class="mdi mdi-folder-home"></span>
+                            </span>
+                        </div>
+                        <input type="text" id="zip" formControlName="zip" class="form-control"
+                        [ngClass]="{'is-valid':zip.valid && (zip.dirty || zip.touched),
+                        'is-invalid': zip.invalid && (zip.dirty || zip.touched)}">
+                    </div>
+                    <form-error-messages [control]="zip"></form-error-messages>
+                </div>
+                <!-- /ZIP -->
+                <!-- COUNTRY -->
+                <div class="form-group">
+                    <label for="country" translate>user.country</label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">
+                                <span class="mdi mdi-folder-home"></span>
+                            </span>
+                        </div>
+                        <select id="country" formControlName="country" class="form-control"
+                        [ngClass]="{'is-valid':country.valid && (country.dirty || country.touched),
+                        'is-invalid': country.invalid && (country.dirty || country.touched)}"
+                        (change)="getRegions(country.value)">
+                            <option *ngFor="let country of countries" [value]="country">{{country}}</option>
+                        </select>
+                    </div>
+                    <form-error-messages [control]="country"></form-error-messages>
+                </div>
+                <!-- /COUNTRY -->
+                <!-- REGION -->
+                <div class="form-group">
+                    <label for="region" translate>user.region</label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">
+                                <span class="mdi mdi-folder-home"></span>
+                            </span>
+                        </div>
+                        <select id="region" formControlName="region" class="form-control"
+                        [ngClass]="{'is-valid':region.valid && (region.dirty || region.touched),
+                        'is-invalid': region.invalid && (region.dirty || region.touched)}"
+                        (change)="getTowns(region.value)">
+                            <option *ngFor="let region of regions" [value]="region">{{region}}</option>
+                        </select>
+                    </div>
+                    <form-error-messages [control]="region"></form-error-messages>
+                </div>
+                <!-- /REGION -->
+                <!-- TOWN -->
+                <div class="form-group">
+                    <label for="town" translate>user.town</label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">
+                                <span class="mdi mdi-folder-home"></span>
+                            </span>
+                        </div>
+                        <select id="town" formControlName="town" class="form-control"
+                        [ngClass]="{'is-valid':town.valid && (town.dirty || town.touched),
+                        'is-invalid': town.invalid && (town.dirty || town.touched)}">
+                            <option *ngFor="let town of towns" [value]="town">{{town}}</option>
+                        </select>
+                    </div>
+                    <form-error-messages [control]="town"></form-error-messages>
+                </div>
+                <!-- /TOWN -->
+            </div>
+            <!-- /BILLING ADDRESS -->
+            <!-- SOCIAL NETWORKS -->
+            <div class="col-12 col-lg-12">
+                <h4 translate>miscellaneous.social_networks</h4>
+                <!-- GITHUB -->
+                <div class="form-group">
+                    <label for="github">GitHub</label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">
+                                <span class="mdi mdi-github"></span>
+                            </span>
+                        </div>
+                        <input type="text" id="github" formControlName="github" class="form-control"
+                        [ngClass]="{'is-valid':github.valid && (github.dirty || github.touched),
+                        'is-invalid': github.invalid && (github.dirty || github.touched)}">
+                    </div>
+                    <form-error-messages [control]="github"></form-error-messages>
+                </div>
+                <!-- /GITHUB -->
+                <!-- LINKEDIN -->
+                <div class="form-group">
+                    <label for="linkedin">LinkedIn</label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">
+                                <span class="mdi mdi-linkedin"></span>
+                            </span>
+                        </div>
+                        <input type="text" id="linkedin" formControlName="linkedin" class="form-control"
+                        [ngClass]="{'is-valid':linkedin.valid && (linkedin.dirty || linkedin.touched),
+                        'is-invalid': linkedin.invalid && (linkedin.dirty || linkedin.touched)}">
+                    </div>
+                    <form-error-messages [control]="linkedin"></form-error-messages>
+                </div>
+                <!-- /LINKEDIN -->
+                <!-- TWITTER -->
+                <div class="form-group">
+                    <label for="twitter">Twitter</label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">
+                                <span class="mdi mdi-twitter"></span>
+                            </span>
+                        </div>
+                        <input type="text" id="twitter" formControlName="twitter" class="form-control"
+                        [ngClass]="{'is-valid':twitter.valid && (twitter.dirty || twitter.touched),
+                        'is-invalid': twitter.invalid && (twitter.dirty || linkedin.touched)}">
+                    </div>
+                    <form-error-messages [control]="twitter"></form-error-messages>
+                </div>
+                <!-- /TWITTER -->
+            </div>
+            <!-- /SOCIAL NETWORKS -->
+            <!-- SUBMIT BTN -->
+            <div class="col-12">
+                <button type="submit" class="btn btn-primary"
+                [disabled]="userForm.invalid" translate>
+                    miscellaneous.update
+                </button>
+            </div>
+            <!-- /SUBMIT BTN -->
+        </form>
+        <!-- /USER FORM -->
+        <!-- CHANGE PASSWORD FORM -->
+        <hr>
+        <form novalidate [formGroup]="passwordForm" (submit)="changePass()">
+            <h4 translate>user.change_password</h4>
+            <!-- PASSWORD -->
+            <div class="form-group">
+                <label for="password" translate>user.password</label>
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">
+                            <span class="mdi mdi-lock"></span>
+                        </span>
+                    </div>
+                    <input type="password" id="password"
+                    formControlName="password" class="form-control"
+                    [ngClass]="{'is-valid':password.valid && (password.dirty || password.touched),
+                    'is-invalid': password.invalid && (password.dirty || password.touched)}"
+                    (focus)="showPassSecurity = true" (blur)="showPassSecurity = false">
+                </div>
+                <password-error-messages *ngIf="showPassSecurity" [password]="password"></password-error-messages>
+                <form-error-messages [control]="password"></form-error-messages>
+                <!-- extra errors -->
+                <div *ngIf="password.errors?.mustMatch" class="text-danger">
+                    <small translate>validators.mustMatch</small>
+                </div>
+                <!-- /extra errors -->
+            </div>
+            <!-- /PASSWORD -->
+            <!-- PASSWORD_CONFIRMATION -->
+            <div class="form-group">
+                <label for="password_confirmation" translate>user.password_confirmation</label>
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">
+                            <span class="mdi mdi-lock-check"></span>
+                        </span>
+                    </div>
+                    <input type="password" id="password_confirmation" 
+                    formControlName="password_confirmation" class="form-control"
+                    [ngClass]="{'is-valid':password_confirmation.valid && (password_confirmation.dirty || password_confirmation.touched), 
+                    'is-invalid': (password_confirmation.invalid || password.errors?.mustMatch) && (password_confirmation.dirty || password_confirmation.touched)}">
+                </div>
+                <form-error-messages [control]="password_confirmation"></form-error-messages>
+            </div>
+            <!-- /PASSWORD_CONFIRMATION -->
+            <!-- SUBMIT BTN -->
+            <button type="submit" class="btn btn-primary"
+            [disabled]="passwordForm.invalid" translate>
+                miscellaneous.change
+            </button>
+        <!-- /SUBMIT BTN -->
+        </form>
+        <!-- /CHANGE PASSWORD FORM -->
+    </div>
+</div>    

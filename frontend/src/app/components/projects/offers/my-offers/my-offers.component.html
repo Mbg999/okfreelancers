@@ -1,0 +1,149 @@
+<div *ngIf="freelancers?.length > 0; else noFreelancers" class="form-group">
+    <!-- SELECT ONE OF YOUR FREELANCER PROFILES -->
+    <p translate>freelancers.pick</p>
+    <div ngbDropdown>
+        <button class="btn btn-primary btn-block" id="pick-a-freelancer" ngbDropdownToggle translate>freelancers.profiles</button>
+        <ul ngbDropdownMenu aria-labelledby="pick-a-freelancer" class="w-100">
+            <li *ngFor="let freelancer of freelancers" (click)="selectedFreelancer = freelancer" ngbDropdownItem>
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-5 col-md-4 col-xl-3 pt-2">
+                        <img class="w-100 rounded" [src]="freelancer.picture | image:'freelancers/pictures'"
+                        [alt]="'miscellaneous.image' | translate">
+                    </div>
+                    <div class="col-7 col-md-8 col-xl-9">
+                        <h6 class="card-title">{{freelancer.title}}</h6>
+                        <small class="card-text pre-wrap">
+                            <span translate>categories.category</span>: {{freelancer.category_name}}
+                        </small>
+                    </div>
+                </div>
+            </div>
+            </li>
+        </ul>
+    </div>
+    <!-- /SELECT ONE OF YOUR FREELANCER PROFILES -->
+    <!-- SELECTED FREELANCER -->
+    <div *ngIf="selectedFreelancer" class="mt-4">
+        <!-- FREELANCER INFO -->
+        <div class="card pointer" [routerLink]="['/MyFreelancerProfiles', selectedFreelancer.id, 'show']">
+            <div class="card-body">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-12 col-md-4 col-xl-3 mb-2">
+                            <img class="w-100 rounded" [src]="selectedFreelancer.picture | image:'freelancers/pictures'"
+                            [alt]="'miscellaneous.image' | translate">
+                        </div>
+                        <div class="col-12 col-md-8 col-xl-9">
+                            <h5 class="card-title">{{selectedFreelancer.title}}</h5>
+                            <p class="card-text">
+                                <span translate>categories.category</span>: 
+                                <span [routerLink]="['/category',selectedFreelancer.category_name]">
+                                    {{selectedFreelancer.category_name}}
+                                </span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /FREELANCER INFO -->
+        <!-- PENDING/ACCEPTED OFFER + JOBS -->
+        <div *ngIf="selectedFreelancer.offer?.company_deposit > 0; else showForm">
+            <div class="card">
+                <div class="card-body">
+                    <h5 *ngIf="selectedFreelancer.offer.freelancer_deposit; else isPending" class="card-title" translate>offers.offer_accepted</h5>
+                    <ng-template #isPending>
+                        <h5 class="card-title" translate>offers.offer_pending</h5>
+                    </ng-template>
+                    <p class="d-lg-flex justify-content-lg-between my-2 pt-2 border-top">
+                        <small class="d-block">
+                            <span translate>offers.price</span>: 
+                            <b class="d-lg-block">{{selectedFreelancer.offer.price | currency:'EUR':'symbol-narrow':null:_multilangService.activeLang}}</b>
+                        </small>
+                        <small class="d-block">
+                            <span translate>offers.approx_hours</span>: 
+                            <b class="d-lg-block">{{selectedFreelancer.offer.approx_hours}} <span translate>miscellaneous.hours</span></b>
+                        </small>
+                        <small class="d-block">
+                            <span translate>offers.aprox_total_price</span>: 
+                            <b class="d-lg-block">{{selectedFreelancer.offer.price * selectedFreelancer.offer.approx_hours | currency:'EUR':'symbol-narrow':null:_multilangService.activeLang}}</b>
+                        </small>
+                        <small class="d-block">
+                            <span translate>offers.approx_term</span>: 
+                            <b class="d-lg-block">{{selectedFreelancer.offer.approx_term}} <span translate>miscellaneous.days</span></b>
+                        </small>
+                    </p>
+                    <h6 class="m-0 mt-4"><span translate>offers.message</span>:</h6>
+                    <div class="pt-1" [innerHTML]="selectedFreelancer.offer.message | safe:'html'"></div>
+                    <!-- ACTION -->
+                    <div *ngIf="!selectedFreelancer.offer.freelancer_deposit">
+                        <div class="d-lg-flex justify-content-lg-between">
+                            <!-- TAKE PROJECT BUTTON -->
+                            <div class="d-block w-100 px-2">
+                                <button type="button" class="btn btn-primary btn-block" (click)="takeProject()">
+                                    <span class="mdi mdi-check-bold" translate> offers.take_project</span>
+                                </button>
+                            </div>
+                            <!-- REFUSE PROJECT BUTTON -->
+                            <div class="d-block w-100 px-2">
+                                <button type="button" class="btn btn-danger btn-block" (click)="refuseProject()">
+                                    <span class="mdi mdi-cancel" translate> offers.refuse_project</span>
+                                </button>
+                            </div>
+                        </div>
+                        <div *ngIf="errBalance">
+                            <small class="text-danger">{{errBalance}}</small>
+                            <a class="d-block" routerLink="/MyBalance">
+                                <small translate>user.goto_add_balance</small>
+                            </a>
+                        </div>
+                    </div>
+                    <!-- /ACTION -->
+                    <!-- JOB -->
+                    <div *ngIf="selectedFreelancer.job" class="pt-2 border-top">
+                        <h5 class="card-title">
+                            <span translate>jobs.job </span> 
+                            <small *ngIf="selectedFreelancer.job.finished"><span class="badge badge-dark" translate>miscellaneous.finished</span></small>
+                        </h5>
+                        <!-- HOURS -->
+                        <app-job-form [job]="selectedFreelancer.job" (updatedHours)="updateHours($event)" (cancelJob)="cancelJob()"></app-job-form>
+                        <!-- /HOURS -->
+                        <!-- RATE -->
+                        <div *ngIf="selectedFreelancer.job.rate" class="card rate">
+                            <div class="card-body">
+                                <div>
+                                    <small class="d-block" translate>jobs.rating</small>
+                                    <ngx-star-rating [total]="5" [rating]="selectedFreelancer.job.rate" [readonly]="true"
+                                    [emptyColor]="'#343a40'" [filledColor]="'#00b5d7'" [type]="'hollow'"></ngx-star-rating>
+                                </div>
+                                <div>
+                                    <small class="d-block" translate>jobs.assessment</small>
+                                    <p>{{selectedFreelancer.job.assessment}}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /RATE -->
+                    </div>
+                    <!-- /JOB -->
+                </div>
+            </div>
+        </div>
+        <!-- /PENDING/ACCEPTED OFFER + JOBS -->
+        <!-- OFFER FORM -->
+        <ng-template #showForm>
+            <p *ngIf="project_finished; else showOfferForm" class="mt-2" translate>offers.finished_project</p>
+            <ng-template #showOfferForm>
+                <app-offer-form [project_id]="project_id"
+                [freelancer_id]="selectedFreelancer.id"
+                [offer]="selectedFreelancer.offer"
+                (newOffer)="selectedFreelancer.offer = $event"></app-offer-form>
+            </ng-template>
+        </ng-template>
+        <!-- /OFFER FORM -->
+    </div>
+    <!-- /SELECTED FREELANCER -->
+</div>
+<ng-template #noFreelancers>
+    <p translate>offers.you_need_a_freelancer_profile</p>
+</ng-template>

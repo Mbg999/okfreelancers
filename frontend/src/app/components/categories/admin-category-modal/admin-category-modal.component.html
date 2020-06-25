@@ -1,0 +1,233 @@
+<div class="modal-content">
+    <!-- MODAL HEADER -->
+    <div class="modal-header">
+        <!-- update or create -->
+        <ng-container *ngIf="category; else itsCreate"> <!-- update -->
+            <!-- category or subcategory -->
+            <ng-container *ngIf="father; else itsUpdateCategory"> <!-- subcategory -->
+                <h3 translate>categories.update_subcategory</h3>
+            </ng-container>
+            <ng-template #itsUpdateCategory> <!-- category -->
+                <h3 translate>categories.update_category</h3>
+            </ng-template>
+        </ng-container>
+        <ng-template #itsCreate> <!-- create -->
+            <!-- category or subcategory -->
+            <ng-container *ngIf="father; else itsCreateCategory"> <!-- subcategory -->
+                <h3 translate>categories.new_subcategory</h3>
+            </ng-container>
+            <ng-template #itsCreateCategory> <!-- category -->
+                <h3 translate>categories.new_category</h3>
+            </ng-template>
+        </ng-template>
+        <button type="button" class="close" (click)="activeModal.dismiss()" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        <input type="text" class="d-none" ngbAutofocus>
+        <!-- 
+            trick for "remove" autofocus, it has some double clicks problems
+            https://stackoverflow.com/questions/53613974/angular7-and-ngbmodal-how-to-remove-default-auto-focus
+        -->
+    </div>
+    <!-- /MODAL HEADER -->
+    <!-- MODAL BODY -->
+    <div class="modal-body" #modalBody>
+        <form novalidate [formGroup]="catForm">
+            <!-- FATHER -->
+            <div class="form-group" *ngIf="father">
+                <label for="father" translate>categories.father</label>
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">
+                            <span class="mdi mdi-label"></span>
+                        </span>
+                    </div>
+                    <input type="text" id="father" class="form-control" disabled [value]="father.name">
+                </div>
+            </div>
+            <!-- /FATHER -->
+            <!-- NEW FATHER -->
+            <!-- CATEGORY -->
+            <div class="form-group">
+                <label for="cat_father" translate>categories.category</label>
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">
+                            <span class="mdi mdi-label-multiple"></span>
+                        </span>
+                    </div>
+                    <select id="cat_father" class="form-control" (change)="getSubcategoriesFromRoot($event.target.value)">
+                        <option *ngIf="father; else selectCat" value="-2" selected translate>categories.default_current_father</option>
+                        <ng-template #selectCat>
+                            <option value="" selected translate>categories.select_category</option>
+                        </ng-template>
+                        <option value="-1" translate>categories.root</option>
+                        <option *ngFor="let cat of categories; let i = index" [value]="i" [title]="cat.description">
+                            {{cat.name}}
+                        </option>
+                    </select>
+                </div>
+            </div>
+            <!-- /CATEGORY -->
+            <!-- SUBCATEGORIES -->
+            <div class="form-group" *ngFor="let scat of subcategories;let idx = index">
+                <label [for]="'subcat_father'+idx" translate>categories.subcategory</label>
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">
+                            <span class="mdi mdi-label-multiple-outline"></span>
+                        </span>
+                    </div>
+                    <select [id]="'subcat_father'+idx" class="form-control" (change)="getSubcategories(idx, $event.target.value)">
+                        <option value="" translate>categories.select_subcategory</option>
+                        <option *ngFor="let cat of scat; let i = index" [value]="i" [title]="cat.description">
+                            {{cat.name}}
+                        </option>
+                    </select>
+                </div>
+            </div>
+            <!-- /SUBCATEGORIES -->
+            <!-- /NEW FATHER -->
+            <!-- NAME_EN -->
+            <div class="form-group">
+                <label for="name_en" translate>miscellaneous.name_en</label>
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">
+                            <span class="mdi mdi-rename-box"></span>
+                        </span>
+                    </div>
+                    <input type="text" id="name_en" formControlName="name_en" class="form-control"
+                    [ngClass]="{'is-valid':name_en.valid && (name_en.dirty || name_en.touched),
+                    'is-invalid': (name_en.invalid || takenName_en) && (name_en.dirty || name_en.touched)}">
+                </div>
+                <div class="alert alert-danger" *ngIf="takenName_en">{{ takenName_en }}</div>
+                <form-error-messages [control]="name_en"></form-error-messages>
+            </div>
+            <!-- /NAME_EN -->
+            <!-- NAME_ES -->
+            <div class="form-group">
+                <label for="name_es" translate>miscellaneous.name_es</label>
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">
+                            <span class="mdi mdi-rename-box"></span>
+                        </span>
+                    </div>
+                    <input type="text" id="name_es" formControlName="name_es" class="form-control"
+                    [ngClass]="{'is-valid':name_es.valid && (name_es.dirty || name_es.touched),
+                    'is-invalid': (name_es.invalid || takenName_es) && (name_es.dirty || name_es.touched)}">
+                </div>
+                <div class="alert alert-danger" *ngIf="takenName_es">{{ takenName_es }}</div>
+                <form-error-messages [control]="name_es"></form-error-messages>
+            </div>
+            <!-- /NAME_ES -->
+            <!-- DESCRIPTION_EN -->
+            <div class="form-group">
+                <label for="description_en" translate>miscellaneous.description_en</label>
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">
+                            <span class="mdi mdi-file-document-edit-outline"></span>
+                        </span>
+                    </div>
+                    <textarea id="description_en" formControlName="description_en" class="form-control"
+                    [ngClass]="{'is-valid':description_en.valid && (description_en.dirty || description_en.touched),
+                    'is-invalid': description_en.invalid && (description_en.dirty || description_en.touched)}"></textarea>
+                </div>
+                <form-error-messages [control]="description_en"></form-error-messages>
+            </div>
+            <!-- /DESCRIPTION_EN -->
+            <!-- DESCRIPTION_ES -->
+            <div class="form-group">
+                <label for="description_es" translate>miscellaneous.description_es</label>
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">
+                            <span class="mdi mdi-file-document-edit-outline"></span>
+                        </span>
+                    </div>
+                    <textarea id="description_es" formControlName="description_es" class="form-control"
+                    [ngClass]="{'is-valid':description_es.valid && (description_es.dirty || description_es.touched),
+                    'is-invalid': description_es.invalid && (description_es.dirty || description_es.touched)}"></textarea>
+                </div>
+                <form-error-messages [control]="description_es"></form-error-messages>
+            </div>
+            <!-- /DESCRIPTION_ES -->
+            <!-- PORTFOLIO_TYPE -->
+            <div class="form-group">
+                <label for="portfolio_type" translate>freelancers.portfolio.portfolio_type</label>
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">
+                            <span class="mdi mdi-file-document-edit-outline"></span>
+                        </span>
+                    </div>
+                    <select id="portfolio_type" formControlName="portfolio_type" class="form-control">
+                        <option value="image" translate>freelancers.portfolio.image</option>
+                        <option value="audio" translate>freelancers.portfolio.audio</option>
+                        <option value="video" translate>freelancers.portfolio.video</option>
+                        <option value="" translate>freelancers.portfolio.no_portfolio</option>
+                    </select>
+                </div>
+            </div>
+            <!-- /PORTFOLIO_TYPE -->
+            <!-- IMAGE -->
+            <div class="text-center">
+                <hr class="my-2">
+                <app-upload-file
+                [file]="category?.image"
+                [type]="'image'"
+                [imageType]="'image'"
+                [imagePipe]="'categories'"
+                [imageSizeType]="'category'"
+                [autoQuality]="true"
+                (add)="image = $event"
+                (remove)="image = null"></app-upload-file>
+            </div>
+            <!-- /IMAGE -->
+            <!-- COLORS -->
+            <div class="text-center">
+                <hr class="my-2">
+                <!-- TITLE_COLOR -->
+                <div class="form-group">
+                    <label for="title_color">
+                        <span class="mdi mdi-format-title" translate> miscellaneous.title_color</span>
+                    </label>
+                    <sketch-picker id="title_color" [control]="title_color" class="mx-auto"></sketch-picker>
+                </div>
+                <!-- /TITLE_COLOR -->
+                <!-- TEXT_COLOR -->
+                <div class="form-group">
+                    <label for="text_color">
+                        <span class="mdi mdi-format-color-text" translate> miscellaneous.text_color</span>
+                    </label>
+                    <sketch-picker id="text_color" [control]="text_color" class="mx-auto"></sketch-picker>
+                </div>
+                <!-- /TEXT_COLOR -->
+                <!-- BACKGROUND_COLOR -->
+                <div class="form-group">
+                    <label for="background_color">
+                        <span class="mdi mdi-format-color-fill" translate> miscellaneous.background_color</span>
+                    </label>
+                    <sketch-picker id="background_color" [control]="background_color" class="mx-auto"></sketch-picker>
+                </div>
+                <!-- /BACKGROUND_COLOR -->
+            </div>
+            <!-- /COLORS -->
+        </form>
+    </div>
+    <!-- /MODAL BODY -->
+    <!-- MODAL FOOTER -->
+    <div class="modal-footer">
+        <!-- SUBMIT BTN -->
+        <div class="col-12">
+            <button type="button" class="btn btn-primary" (click)="send()"
+            [disabled]="catForm.invalid" translate>
+                {{ (category) ? 'miscellaneous.update' : 'miscellaneous.create' }}
+            </button>
+        </div>
+        <!-- /SUBMIT BTN -->
+    </div>
+    <!-- /MODAL FOOTER -->
+</div>

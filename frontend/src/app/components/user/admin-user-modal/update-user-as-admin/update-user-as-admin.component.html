@@ -1,0 +1,48 @@
+<div *ngIf="user; else loading">
+    <!-- ROLES -->
+    <div>
+        <h4 translate>roles.roles</h4>
+        <!-- ADD ROLE -->
+        <div class="form-group">
+            <label for="add_role" translate>roles.add_role</label>
+            <select id="add_role" class="form-control" (change)="addedRole=null" #addRoleSelect>
+                <option value="" translate>roles.select</option>
+                <option *ngFor="let role of availableRoles;" [value]="role.id">{{role.name}}</option>
+            </select>
+            <small *ngIf="addedRole"class="text-success">{{addedRole}}</small>
+        </div>
+        <button type="button" class="btn btn-primary"
+        (click)="addRole(addRoleSelect)" translate>
+            roles.add_role
+        </button>
+        <!-- /ADD ROLE -->
+        <!-- REMOVE ROLE -->
+        <div class="form-group mt-2">
+            <label for="add_role" translate>roles.remove_role</label>
+            <select id="add_role" class="form-control" (change)="removedRole=null" #removeRoleSelect>
+                <option value="" translate>roles.select</option>
+                <option *ngFor="let role of onUseRoles" [value]="role.id">{{role.name}}</option>
+            </select>
+            <small *ngIf="removedRole"class="text-success">{{removedRole}}</small>
+        </div>
+        <button type="button" class="btn btn-primary"
+        (click)="removeRole(removeRoleSelect)" translate>
+            roles.remove_role
+        </button>
+        <!-- /REMOVE ROLE -->
+    </div>
+    <!-- /ROLES -->
+    <!-- UPDATE USER FORM -->
+    <app-update-user-form
+    [user]="user"
+    [takenEmail]="takenEmail"
+    [itsModal]="true"
+    [uploadingPicture]="uploadingPicture"
+    (updateUser)="updateUser($event)"
+    (changePassword)="changePassword($event)"
+    (changePicture)="changePicture($event)"></app-update-user-form>
+    <!-- /UPDATE USER FORM -->
+</div>
+<ng-template #loading>
+    <h1 class="mdi mdi-circle-half mdi-spin mdi-48px" translate> dialog.loading</h1>
+</ng-template>

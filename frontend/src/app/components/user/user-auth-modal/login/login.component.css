@@ -1,0 +1,11 @@
+a.text-primary{
+    cursor: pointer;
+}
+
+.btn-link {
+    padding: 0;
+}
+
+.mdi-arrow-left:hover {
+    text-decoration: none;
+}

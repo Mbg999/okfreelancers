@@ -1,0 +1,27 @@
+<div class="row justify-content-between mb-4">
+    <div class="col-12 col-lg-6 text-center text-lg-left">
+        <h1 translate>freelancers.your_profiles</h1>
+    </div>
+    <div class="col-12 col-lg-6 text-center text-lg-right">
+        <button class="btn btn-primary" routerLink="/MyFreelancerProfiles/create">
+            <span class="mdi mdi-plus" translate> freelancers.create</span>
+        </button>
+    </div>
+</div>
+<div *ngIf="freelancers; else loading">
+    <div *ngIf="freelancers.length > 0; else noFreelancers" class="card-columns animated fadeIn">
+        <app-freelancer-card *ngFor="let freelancer of freelancers"
+        [freelancer]="freelancer"
+        [showTitle]="false"
+        [itsMyProfile]="true"
+        [titleColor]="freelancer.title_color"
+        [textColor]="freelancer.text_color"
+        [bgColor]="freelancer.background_color"></app-freelancer-card>
+    </div>
+    <ng-template #noFreelancers>
+        <h4 translate>freelancers.no_auth_freelancers</h4>
+    </ng-template>
+</div>
+<ng-template #loading>
+    <h1 class="mdi mdi-circle-half mdi-spin mdi-48px" translate> dialog.loading</h1>
+</ng-template>

@@ -1,0 +1,235 @@
+<div *ngIf="freelancer && user; else loading" class="container animated fadeIn">
+    <div class="row">
+        <!-- LEFT SECTION -->
+        <div class="col-12 col-md-4 col-xl-3 py-3 border-right text-center">
+            <!-- PICTURE -->
+            <img [src]="freelancer.picture |image:'freelancers/pictures'" class="w-100">
+            <!-- /PICTURE -->
+            <!-- USER INFO -->
+            <div class="border-top pt-3 mt-3">
+                <div class="card bg-light">
+                    <div class="card-body py-2">
+                        <!-- PICTURE, NAME, SURNAMES -->
+                        <div class="rounded py-2 pointer" [routerLink]="[(!auth_user || user.id != auth_user.id) ? '/user/'+user.email : '/MyProfile/show']">
+                            <p class="m-0 p-0" translate>user.owner</p>
+                            <img [src]="user.picture | image:'users/pictures'" class="w-50 mx-auto my-3 rounded-circle">
+                            <p class="p-0 m-0 h5">{{user.name}} {{user.surnames}}</p>
+                        </div>
+                        <!-- /PICTURE, NAME, SURNAMES -->
+                        <!-- TOWN, REGION, COUNTRY -->
+                        <div *ngIf="user.town" class="border-top pt-3 mt-3">
+                            <address *ngIf="user.town" class="text-center">
+                                <span class="d-block">{{user.town}}</span>
+                                <span class="d-block">{{user.region}}, {{user.country}}</span>
+                            </address>
+                        </div>
+                        <!-- /TOWN, REGION, COUNTRY -->
+                    </div>
+                </div>
+            </div>
+            <!-- /USER INFO -->
+            <!-- RATE AVERAGE -->
+            <div class="border-top pt-3 mt-3">
+                <h5 class="d-block" translate>freelancers.rate_average</h5>
+                <ngx-star-rating [total]="5" [rating]="freelancer.rate_average" [readonly]="true"
+                [emptyColor]="'#343a40'" [filledColor]="'#00b5d7'" [type]="'hollow'"></ngx-star-rating>
+                <small>({{freelancer.rate_count}})</small>
+            </div>
+            <!-- /RATE AVERAGE -->
+        </div>
+        <!-- /LEFT SECTION -->
+        <!-- RIGHT SECTION -->
+        <div class="col-12 col-md-8 col-xl-9 py-3">
+            <h1 class="mb-5 txet-center">{{freelancer.title}}</h1>
+            <!-- CATEGORY, YEARS_EXP, APPROX_FEE -->
+            <div class="container-fluid border-top pt-3 mt-3">
+                <div class="row">
+                    <!-- CATEGORY -->
+                    <div class="col-12 col-md-6 col-lg-4">
+                        <p>
+                            <span class="d-inline d-lg-block"><span translate>categories.category</span>: </span>
+                            <a class="badge badge-pill"
+                            [ngStyle]="{'color':freelancer.title_color,'background-color':freelancer.background_color}"
+                            [routerLink]="['/category',freelancer.category_name]">{{freelancer.category_name}}</a>
+                        </p>
+                    </div>
+                    <!-- /CATEGORY -->
+                    <!-- YEARS_EXP -->
+                    <div class="col-12 col-md-6 col-lg-4">
+                        <p>
+                            <span class="d-inline d-lg-block"><span translate>freelancers.years_exp</span>: </span>
+                            <span [ngSwitch]="freelancer.years_exp">
+                                <span *ngSwitchCase="2" translate>
+                                    freelancers.between_2_and_5
+                                </span>
+                                <span *ngSwitchCase="5" translate>
+                                    freelancers.between_5_and_7
+                                </span>
+                                <span *ngSwitchCase="7" translate>
+                                    freelancers.over_7
+                                </span>
+                                <span *ngSwitchDefault translate>
+                                    freelancers.less_than_2
+                                </span>
+                            </span>
+                        </p>
+                    </div>
+                    <!-- /YEARS_EXP -->
+                    <!-- APPROX_FEE -->
+                    <div class="col-12 col-md-6 col-lg-4">
+                        <p>
+                            <span class="d-inline d-lg-block"><span translate>freelancers.approx_fee</span>: </span>
+                            {{ freelancer.approx_fee | currency:'EUR':'symbol-narrow':null:_multilangService.activeLang }}
+                        </p>
+                    </div>
+                    <!-- /APPROX_FEE -->
+                </div>
+            </div>
+            <!-- /CATEGORY, YEARS_EXP, APPROX_FEE -->
+            <h3 class="h4" translate>miscellaneous.description</h3>
+            <div class="edited-text" [innerHTML]="freelancer.description | safe:'html'"></div>
+            <!-- SKILLS -->
+            <div *ngIf="freelancer.skills?.length > 0" class="border-top pt-3 mt-3">
+                <h3 class="h4" translate>skills.skills</h3>
+                <p>
+                    <span *ngFor="let skill of freelancer.skills" [title]="skill.description"
+                    [ngStyle]="{'color':skill.title_color,'background-color':skill.background_color}"
+                    class="badge badge-pill badge-primary py-1 mr-1 pointer" [routerLink]="['/skill',skill.name]">
+                        {{skill.name}}
+                    </span>
+                </p>
+            </div>
+            <!-- /SKILLS -->
+            <!-- PORTFOLIO -->
+            <div *ngIf="freelancer.portfolio_type">
+                <div *ngIf="freelancer.portfolio.length > 0; else emptyPortfolio" class="border-top pt-3 mt-3">
+                    <h3 class="h4">Portfolio</h3>
+                    <div [ngSwitch]="freelancer.portfolio_type">
+                        <div *ngSwitchCase="'image'">
+                            <div *ngFor="let portfolio of freelancer.portfolio" class="card mb-2">
+                                <img [src]="portfolio.file | image:'portfolios/images'" class="card-img-top portfolio" [alt]="portfolio.title" [title]="portfolio.title">
+                                <div class="card-body">
+                                    <h5 class="card-title">{{portfolio.title}}</h5>
+                                    <p class="card-text">{{portfolio.description}}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /PORTFOLIO TYPE IMAGE -->
+                        <!-- PORTFOLIO TYPE AUDIO -->
+                        <div *ngSwitchCase="'audio'">
+                            <div *ngFor="let portfolio of freelancer.portfolio" class="card mb-2">
+                                <div class="card-body">
+                                    <div class="container-fluid">
+                                        <div class="row">
+                                            <div class="col-12 col-md-4">
+                                                <app-audio
+                                                [img]="freelancer.picture | image:'freelancers/pictures'"
+                                                [audio]="portfolio.file | audio:'portfolios/audios'"
+                                                [side_btns]="true"></app-audio>
+                                            </div>
+                                            <div class="col-12 col-md-8">
+                                                <h5 class="card-title">{{portfolio.title}}</h5>
+                                                <p class="card-text">{{portfolio.description}}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /PORTFOLIO TYPE AUDIO -->
+                        <!-- PORTFOLIO TYPE VIDEO -->
+                        <div *ngSwitchCase="'video'">
+                            <div *ngFor="let portfolio of freelancer.portfolio" class="card mb-2">
+                                <app-video  class="portfolio" [video]="portfolio.file | video:'portfolios/videos'"></app-video>
+                                <div class="card-body">
+                                    <h5 class="card-title">{{portfolio.title}}</h5>
+                                    <p class="card-text">{{portfolio.description}}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /PORTFOLIO TYPE VIDEO -->
+                    </div>
+                </div>
+                <ng-template #emptyPortfolio>
+                    <p [translateParams]="{name: user.name}" translate>freelancers.portfolio.empty</p>
+                </ng-template>
+            </div>
+            <!-- /PORTFOLIO -->
+            <!-- PROJECTS -->
+            <div *ngIf="projects; else loadingProjects" class="border-top pt-3 mt-3">
+                <h3 class="h4" translate>projects.projects</h3>
+                <div *ngIf="projects.in_progress.length > 0 || projects.finisheds.length > 0; else noProjects">
+                    <ul ngbNav #nav="ngbNav" [(activeId)]="activeTab" class="nav-tabs mt-4">
+                        <!-- FINISHEDS -->
+                        <li [ngbNavItem]="1">
+                            <a class="text-info" ngbNavLink>
+                                <span class="text-info" translate>projects.finisheds</span>
+                                <span *ngIf="projects.finisheds?.length > 0">
+                                    &nbsp;<span class="badge badge-primary">{{projects.finisheds.length}}</span>
+                                </span>
+                            </a>
+                            <ng-template ngbNavContent>
+                                <div *ngIf="projects.finisheds.length > 0; else finishedsEmpty" class="card-columns column-count-xl-3">
+                                    <div *ngFor="let project of projects.finisheds">
+                                        <div class="card">
+                                            <app-project-card [project]="project" [noMargin]="true"
+                                            [itsMyProject]="auth_user?.id == project.user_id"></app-project-card>
+                                            <div *ngIf="project.job.rate" class="card rate">
+                                                <div class="card-body">
+                                                    <div>
+                                                        <small class="d-block" translate>jobs.rating</small>
+                                                        <ngx-star-rating [total]="5" [rating]="project.job.rate" [readonly]="true"
+                                                        [emptyColor]="'#343a40'" [filledColor]="'#00b5d7'" [type]="'hollow'"></ngx-star-rating>
+                                                    </div>
+                                                    <div>
+                                                        <small class="d-block" translate>jobs.assessment</small>
+                                                        <p>{{project.job.assessment}}</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <ng-template #finishedsEmpty>
+                                    <p translate>projects.finisheds_empty</p>
+                                </ng-template>
+                            </ng-template>
+                        </li>
+                        <!-- /FINISHEDS -->
+                        <!-- IN_PROGRESS -->
+                        <li [ngbNavItem]="2">
+                            <a class="text-info" ngbNavLink>
+                                <span class="text-info" translate>projects.in_progress</span>
+                                <span *ngIf="projects.in_progress?.length > 0">
+                                    &nbsp;<span class="badge badge-primary">{{projects.in_progress.length}}</span>
+                                </span>
+                            </a>
+                            <ng-template ngbNavContent>
+                                <div *ngIf="projects.in_progress.length > 0; else inProgressEmpty" class="card-columns column-count-xl-3">
+                                    <app-project-card *ngFor="let project of projects.in_progress"
+                                    [project]="project" [itsMyProject]="auth_user?.id == project.user_id"></app-project-card>
+                                </div>
+                                <ng-template #inProgressEmpty>
+                                    <p translate>projects.in_progress_empty</p>
+                                </ng-template>
+                            </ng-template>
+                        </li>
+                        <!-- /IN_PROGRESS -->
+                    </ul>
+                    <div [ngbNavOutlet]="nav"></div>
+                </div>
+                <ng-template #noProjects>
+                    <p translate>projects.not_participated</p>
+                </ng-template>
+            </div>
+            <ng-template #loadingProjects>
+                <h1 class="mdi mdi-circle-half mdi-spin mdi-48px" translate> dialog.loading</h1>
+            </ng-template>
+            <!-- /PROJECTS -->
+        </div>
+        <!-- /RIGHT SECTION -->
+    </div>
+</div>
+<ng-template #loading>
+    <h1 class="mdi mdi-circle-half mdi-spin mdi-48px" translate> dialog.loading</h1>
+</ng-template>

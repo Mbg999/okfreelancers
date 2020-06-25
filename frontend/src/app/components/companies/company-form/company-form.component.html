@@ -1,0 +1,236 @@
+<div>
+    <form [formGroup]="companyForm" (submit)="send()" novalidate>
+        <!-- IDENTITY -->
+        <div>
+            <h4 translate>companies.identity</h4>
+            <!-- NAME -->
+            <div class="form-group">
+                <label for="name" translate>miscellaneous.name</label>
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">
+                            <span class="mdi mdi-rename-box"></span>
+                        </span>
+                    </div>
+                    <input type="text" id="name" formControlName="name" class="form-control"
+                    [ngClass]="{'is-valid':name.valid && (name.dirty || name.touched),
+                    'is-invalid': name.invalid && (name.dirty || name.touched)}">
+                </div>
+                <div class="alert alert-danger" *ngIf="takenName">{{ takenName }}</div>
+                <form-error-messages [control]="name"></form-error-messages>
+            </div>
+            <!-- /NAME -->
+            <!-- DESCRIPTION -->
+            <div class="form-group">
+                <label for="description" translate>miscellaneous.description</label>
+                <p-editor id="description" formControlName="description" [style]="{'height':'320px'}"
+                [p-editor-model]="editor" #editor></p-editor>
+                <form-error-messages [control]="description"></form-error-messages>
+            </div>
+            <!-- /DESCRIPTION -->
+            <!-- LOGO -->
+            <div class="text-center">
+                <hr class="my-2">
+                <app-upload-file
+                [file]="company?.logo"
+                [type]="'image'"
+                [imageType]="'logo'"
+                [imagePipe]="'companies/logos'"
+                [imageSizeType]="'logo'"
+                [autoQuality]="true"
+                (add)="logo = $event"
+                (remove)="logo = null"></app-upload-file>
+            </div>
+            <!-- /LOGO -->
+        </div>
+        <!-- IDENTITY -->
+        <!-- BILLING ADDRESS -->
+        <div>
+            <hr class="my-2">
+            <h4 translate>user.address_billing</h4>
+            <!-- ADDRESS -->
+            <div class="form-group">
+                <label for="address" translate>user.address</label>
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">
+                            <span class="mdi mdi-folder-home"></span>
+                        </span>
+                    </div>
+                    <input type="text" id="address" formControlName="address" class="form-control"
+                    [ngClass]="{'is-valid':address.valid && (address.dirty || address.touched),
+                    'is-invalid': address.invalid && (address.dirty || address.touched)}">
+                </div>
+                <form-error-messages [control]="address"></form-error-messages>
+            </div>
+            <!-- /ADDRESS -->
+            <!-- ADDRESS_DESCRIPTION -->
+            <div class="form-group">
+                <label for="address" translate>user.address_description</label>
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">
+                            <span class="mdi mdi-folder-home"></span>
+                        </span>
+                    </div>
+                    <textarea id="address_description" formControlName="address_description" class="form-control"
+                    [ngClass]="{'is-valid':address_description.valid && (address_description.dirty || address_description.touched),
+                    'is-invalid': address_description.invalid && (address_description.dirty || address_description.touched)}">
+                    </textarea>
+                </div>
+                <form-error-messages [control]="address_description"></form-error-messages>
+            </div>
+            <!-- /ADDRESS_DESCRIPTION -->
+            <!-- ZIP -->
+            <div class="form-group">
+                <label for="zip" translate>user.zip</label>
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">
+                            <span class="mdi mdi-folder-home"></span>
+                        </span>
+                    </div>
+                    <input type="text" id="zip" formControlName="zip" class="form-control"
+                    [ngClass]="{'is-valid':zip.valid && (zip.dirty || zip.touched),
+                    'is-invalid': zip.invalid && (zip.dirty || zip.touched)}">
+                </div>
+                <form-error-messages [control]="zip"></form-error-messages>
+            </div>
+            <!-- /ZIP -->
+            <!-- COUNTRY -->
+            <div class="form-group">
+                <label for="country" translate>user.country</label>
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">
+                            <span class="mdi mdi-folder-home"></span>
+                        </span>
+                    </div>
+                    <select id="country" formControlName="country" class="form-control"
+                    [ngClass]="{'is-valid':country.valid && (country.dirty || country.touched),
+                    'is-invalid': country.invalid && (country.dirty || country.touched)}"
+                    (change)="getRegions(country.value)">
+                        <option *ngFor="let country of countries" [value]="country">{{country}}</option>
+                    </select>
+                </div>
+                <form-error-messages [control]="country"></form-error-messages>
+            </div>
+            <!-- /COUNTRY -->
+            <!-- REGION -->
+            <div class="form-group">
+                <label for="region" translate>user.region</label>
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">
+                            <span class="mdi mdi-folder-home"></span>
+                        </span>
+                    </div>
+                    <select id="region" formControlName="region" class="form-control"
+                    [ngClass]="{'is-valid':region.valid && (region.dirty || region.touched),
+                    'is-invalid': region.invalid && (region.dirty || region.touched)}"
+                    (change)="getTowns(region.value)">
+                        <option *ngFor="let region of regions" [value]="region">{{region}}</option>
+                    </select>
+                </div>
+                <form-error-messages [control]="region"></form-error-messages>
+            </div>
+            <!-- /REGION -->
+            <!-- TOWN -->
+            <div class="form-group">
+                <label for="town" translate>user.town</label>
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">
+                            <span class="mdi mdi-folder-home"></span>
+                        </span>
+                    </div>
+                    <select id="town" formControlName="town" class="form-control"
+                    [ngClass]="{'is-valid':town.valid && (town.dirty || town.touched),
+                    'is-invalid': town.invalid && (town.dirty || town.touched)}">
+                        <option *ngFor="let town of towns" [value]="town">{{town}}</option>
+                    </select>
+                </div>
+                <form-error-messages [control]="town"></form-error-messages>
+            </div>
+            <!-- /TOWN -->
+        </div>
+        <!-- /BILLING ADDRESS -->
+        <!-- SOCIAL NETWORKS -->
+        <div>
+            <h4 translate>miscellaneous.social_networks</h4>
+            <!-- WEB -->
+            <div class="form-group">
+                <label for="web" translate>miscellaneous.your_web</label>
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">
+                            <span class="mdi mdi-web"></span>
+                        </span>
+                    </div>
+                    <input type="text" id="web" formControlName="web" class="form-control"
+                    [ngClass]="{'is-valid':web.valid && (web.dirty || web.touched),
+                    'is-invalid': web.invalid && (web.dirty || web.touched)}">
+                </div>
+                <form-error-messages [control]="web"></form-error-messages>
+            </div>
+            <!-- /WEB -->
+            <!-- GITHUB -->
+            <div class="form-group">
+                <label for="github">GitHub</label>
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">
+                            <span class="mdi mdi-github"></span>
+                        </span>
+                    </div>
+                    <input type="text" id="github" formControlName="github" class="form-control"
+                    [ngClass]="{'is-valid':github.valid && (github.dirty || github.touched),
+                    'is-invalid': github.invalid && (github.dirty || github.touched)}">
+                </div>
+                <form-error-messages [control]="github"></form-error-messages>
+            </div>
+            <!-- /GITHUB -->
+            <!-- LINKEDIN -->
+            <div class="form-group">
+                <label for="linkedin">LinkedIn</label>
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">
+                            <span class="mdi mdi-linkedin"></span>
+                        </span>
+                    </div>
+                    <input type="text" id="linkedin" formControlName="linkedin" class="form-control"
+                    [ngClass]="{'is-valid':linkedin.valid && (linkedin.dirty || linkedin.touched),
+                    'is-invalid': linkedin.invalid && (linkedin.dirty || linkedin.touched)}">
+                </div>
+                <form-error-messages [control]="linkedin"></form-error-messages>
+            </div>
+            <!-- /LINKEDIN -->
+            <!-- TWITTER -->
+            <div class="form-group">
+                <label for="twitter">Twitter</label>
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">
+                            <span class="mdi mdi-twitter"></span>
+                        </span>
+                    </div>
+                    <input type="text" id="twitter" formControlName="twitter" class="form-control"
+                    [ngClass]="{'is-valid':twitter.valid && (twitter.dirty || twitter.touched),
+                    'is-invalid': twitter.invalid && (twitter.dirty || linkedin.touched)}">
+                </div>
+                <form-error-messages [control]="twitter"></form-error-messages>
+            </div>
+            <!-- /TWITTER -->
+        </div>
+        <!-- /SOCIAL NETWORKS -->
+        <!-- SUBMIT BTN -->
+        <div>
+            <button type="submit" class="btn btn-primary"
+            [disabled]="companyForm.invalid">
+                {{ ((company) ? 'miscellaneous.update' : 'miscellaneous.create') | translate}}
+            </button>
+        </div>
+        <!-- /SUBMIT BTN -->
+    </form>
+</div>

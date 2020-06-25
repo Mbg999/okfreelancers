@@ -1,0 +1,32 @@
+<div class="modal-content animated fadeIn faster">
+    <!-- MODAL HEADER -->
+    <div class="modal-header">
+        <!-- update or create -->
+        <ng-container *ngIf="id; else itsCreate"> <!-- update -->
+            <h3 translate>companies.update</h3>
+        </ng-container>
+        <ng-template #itsCreate> <!-- create -->
+            <h3 translate>companies.create</h3>
+        </ng-template>
+        <button type="button" class="close" (click)="activeModal.dismiss()" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        <input type="text" class="d-none" ngbAutofocus>
+        <!-- 
+            trick for "remove" autofocus, it has some double clicks problems
+            https://stackoverflow.com/questions/53613974/angular7-and-ngbmodal-how-to-remove-default-auto-focus
+        -->
+    </div>
+    <!-- /MODAL HEADER -->
+    <!-- MODAL BODY -->
+    <div class="modal-body" #modalBody>
+        <ng-container *ngIf="showForm; else loading">
+            <app-admin-user-search [user_idError]="user_idError" (user)="user = $event"></app-admin-user-search>
+            <app-company-form [company]="company" [takenName]="takenName" (result)="send($event)"></app-company-form>
+        </ng-container>
+        <ng-template #loading>
+            <h1 class="mdi mdi-circle-half mdi-spin mdi-48px" translate> dialog.loading</h1>
+        </ng-template>
+    </div>
+    <!-- /MODAL BODY -->
+</div>

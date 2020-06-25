@@ -1,0 +1,110 @@
+<!-- TITLE + CREATE BTN -->
+<div *ngIf="originalProjects"> <!-- hide until projects finish loading -->
+    <h1 class="display-4 mb-3" translate>projects.projects</h1>
+    <button type="button" class="btn btn-success btn-block" (click)="create()">
+        <span class="mdi mdi-plus" translate> projects.create</span>
+    </button>
+</div>
+<!-- /TITLE + CREATE BTN -->
+<!-- SEARCH BAR + TABLE + LOADING + NO PROJECTS -->
+<div *ngIf="originalProjects?.length > 0; else screensaver" class="animated fadeIn">
+    <!-- SEARCH BAR -->
+    <form class="form-inline">
+        <div class="input-group w-100 position-relative searchBar">
+            <div class="input-group-prepend">
+                <span class="input-group-text">
+                    <span class="mdi mdi-card-search"></span>
+                </span>
+            </div>
+            <input class="form-control" id="searchBar" type="text" #s (keyup)="search(s.value)"
+            [placeholder]="'projects.search' | translate" aria-label="Search">
+            <span class="mdi mdi-close-thick" [ngClass]="{'d-none':s.value.length < 1}"
+            (click)="clearSearchBar(s)"></span>
+        </div>
+    </form>
+    <!-- /SEARCH BAR -->
+    <!-- TABLE -->
+    <p-table [value]="projects" [responsive]="true" [autoLayout]="true"
+    [paginator]="true" [rows]="5" [totalRecords]="projects.length"
+    [rowsPerPageOptions]="[5,10,20,30]" dataKey="id">
+        <ng-template pTemplate="header">
+            <tr>
+                <th [pSortableColumn]="'id'">
+                    ID
+                    <p-sortIcon [field]="'id'"></p-sortIcon>
+                </th>
+                <th [pSortableColumn]="'title'" translate>
+                    miscellaneous.title
+                    <p-sortIcon [field]="'title'"></p-sortIcon>
+                </th>
+                <th [pSortableColumn]="'budget'" translate>
+                    projects.budget
+                    <p-sortIcon [field]="'budget'"></p-sortIcon>
+                </th>
+                <th [pSortableColumn]="'deleted_at'" translate>
+                    miscellaneous.status
+                    <p-sortIcon [field]="'deleted_at'"></p-sortIcon>
+                </th>
+                <th translate>
+                    miscellaneous.options
+                </th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-project let-i="rowIndex">
+            <tr>
+                <td>{{project.id}}</td>
+                <td [routerLink]="['/company/project', project.id]">{{project.title}}</td>
+                <td>{{project.budget | currency:'EUR':'symbol-narrow':null:_multilangService.activeLang}}</td>
+                <td>
+                    <ng-container *ngIf="project.deleted_at; else isEnabled">
+                        <div class="btn-group-vertical w-100" role="group" aria-label="Options">
+                            <button *ngIf="project.ban_reason" type="button" class="btn btn-secondary"
+                            (click)="readBan_reason(i)">
+                                <span class="mdi mdi-card-text-outline" translate> miscellaneous.ban_read</span>
+                            </button>
+                            <button type="button" class="btn btn-success btn-block"
+                            (click)="toggleDeleted_at(i)">
+                                <span class="mdi mdi-account-check" translate> miscellaneous.enable</span>
+                            </button>
+                        </div>
+                    </ng-container>
+                    <ng-template #isEnabled>
+                        <p class="text-success" translate>miscellaneous.currently_enabled</p>
+                        <button type="button" class="btn btn-danger btn-block"
+                        (click)="toggleDeleted_at(i)">
+                            <span class="mdi mdi-account-cancel" translate> miscellaneous.ban</span>
+                        </button>
+                    </ng-template>
+                </td>
+                <td>
+                    <div class="btn-group-vertical w-100" role="group" aria-label="Options">
+                        <button type="button" class="btn btn-warning" 
+                        (click)="update(i)">
+                            <span class="mdi mdi-lead-pencil" translate> miscellaneous.edit</span>
+                        </button>
+                        <button type="button" class="btn btn-dark" 
+                        (click)="delete(i)">
+                            <span class="mdi mdi-trash-can-outline" translate> miscellaneous.delete</span>
+                        </button>
+                    </div>
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+</div>
+<!-- /TABLE -->
+<!-- LOADING + NO PROJECTS -->
+<ng-template #screensaver>
+    <!-- NO PROJECTS -->
+    <ng-container *ngIf="originalProjects; else loading">
+        <h5 translate>projects.no_projects</h5>
+    </ng-container>
+    <!-- /NO PROJECTS -->
+    <!-- LOADING -->
+    <ng-template #loading>
+        <h1 class="mdi mdi-circle-half mdi-spin mdi-48px" translate> dialog.loading</h1>
+    </ng-template>
+    <!-- /LOADING -->
+</ng-template>
+<!-- /LOADING + NO PROJECTS -->
+<!-- /SEARCH BAR + TABLE + LOADING + NO PROJECTS -->

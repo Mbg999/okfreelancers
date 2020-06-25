@@ -1,0 +1,17 @@
+.social-networks {
+    padding-left: 15px;    
+    text-align: left;
+}
+
+.social-networks a {
+    color: #1a1a1a;
+}
+
+.social-networks a:hover {
+    text-decoration: none;
+    color: #17414d;
+}
+
+.logo {
+    max-width: 260px;
+}

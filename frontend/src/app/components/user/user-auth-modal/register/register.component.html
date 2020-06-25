@@ -1,0 +1,126 @@
+<div *ngIf="!registeredMsg; else done">
+    <form novalidate [formGroup]="registerForm" (submit)="register()">
+        <!-- EMAIL -->
+        <div class="form-group">
+            <label for="email" translate>user.email</label>
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <span class="input-group-text">
+                        <span class="mdi mdi-account"></span>
+                    </span>
+                </div>
+                <input type="text" id="email" formControlName="email" class="form-control"
+                [ngClass]="{'is-valid':email.valid && (email.dirty || email.touched),
+                'is-invalid': (email.invalid || takenEmail) && (email.dirty || email.touched)}">
+            </div>
+            <div class="alert alert-danger" *ngIf="takenEmail">{{ takenEmail }}</div>
+            <form-error-messages [control]="email"></form-error-messages>
+        </div>
+        <!-- /EMAIL -->
+        <!-- PASSWORD -->
+        <div class="form-group">
+            <label for="password" translate>user.password</label>
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <span class="input-group-text">
+                        <span class="mdi mdi-lock"></span>
+                    </span>
+                </div>
+                <input type="password" id="password" formControlName="password" class="form-control"
+                [ngClass]="{'is-valid':password.valid && (password.dirty || password.touched),
+                'is-invalid': password.invalid && (password.dirty || password.touched)}"
+                (focus)="showPassSecurity = true" (blur)="showPassSecurity = false">
+            </div>
+            <password-error-messages *ngIf="showPassSecurity" [password]="password"></password-error-messages>
+            <form-error-messages [control]="password"></form-error-messages>
+            <!-- extra errors -->
+            <div *ngIf="password.errors?.mustMatch" class="text-danger">
+                <small translate>validators.mustMatch</small>
+            </div>
+            <!-- /extra errors -->
+        </div>
+        <!-- /PASSWORD -->
+        <!-- PASSWORD_CONFIRMATION -->
+        <div class="form-group">
+            <label for="password_confirmation" translate>user.password_confirmation</label>
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <span class="input-group-text">
+                        <span class="mdi mdi-lock-check"></span>
+                    </span>
+                </div>
+                <input type="password" id="password_confirmation" formControlName="password_confirmation" class="form-control"
+                [ngClass]="{'is-valid':password_confirmation.valid && (password_confirmation.dirty || password_confirmation.touched), 
+                'is-invalid': (password_confirmation.invalid || password.errors?.mustMatch) && (password_confirmation.dirty || password_confirmation.touched)}">
+            </div>
+            <form-error-messages [control]="password_confirmation"></form-error-messages>
+        </div>
+        <!-- /PASSWORD_CONFIRMATION -->
+        <!-- NAME -->
+        <div class="form-group">
+            <label for="name" translate>miscellaneous.name</label>
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <span class="input-group-text">
+                        <span class="mdi mdi-account-details"></span>
+                    </span>
+                </div>
+                <input type="text" id="name" formControlName="name" class="form-control"
+                [ngClass]="{'is-valid':name.valid && (name.dirty || name.touched),
+                'is-invalid': name.invalid && (name.dirty || name.touched)}">
+            </div>
+            <form-error-messages [control]="name"></form-error-messages>
+        </div>
+        <!-- /NAME -->
+        <!-- SURNAMES -->
+        <div class="form-group">
+            <label for="surnames" translate>user.surnames</label>
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <span class="input-group-text">
+                        <span class="mdi mdi-account-details"></span>
+                    </span>
+                </div>
+                <input type="text" id="surnames" formControlName="surnames" class="form-control"
+                [ngClass]="{'is-valid':surnames.valid && (surnames.dirty || surnames.touched),
+                'is-invalid': surnames.invalid && (surnames.dirty || surnames.touched)}">
+            </div>
+            <form-error-messages [control]="surnames"></form-error-messages>
+        </div>
+        <!-- /SURNAMES -->
+        <!-- BORN_DATE -->
+        <div class="form-group">
+            <label for="born_date" translate>user.born_date</label>
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <span class="input-group-text">
+                        <span class="mdi mdi-calendar-month"></span>
+                    </span>
+                </div>
+                <input type="date" id="born_date" formControlName="born_date" class="form-control"
+                [ngClass]="{'is-valid':born_date.valid && (born_date.dirty || born_date.touched),
+                'is-invalid': born_date.invalid && (born_date.dirty || born_date.touched)}">
+            </div>
+            <form-error-messages [control]="born_date"></form-error-messages>
+            <!-- extra errors -->
+            <div *ngIf="born_date.errors?.tooYoung" class="text-danger">
+                <small translate>validators.tooYoung</small>
+            </div>
+            <!-- /extra errors -->
+        </div>
+        <!-- /BORN_DATE -->
+        <!-- SUBMIT BTN -->
+        <button type="submit" class="btn btn-primary"
+        [disabled]="registerForm.invalid" translate>
+            user.register
+        </button>
+        <!-- /SUBMIT BTN -->
+    </form>
+</div>
+<ng-template #done>
+    <div class="text-center">
+        <span class="mdi mdi-email-outline d-block"></span>
+        <p>{{registeredMsg}}</p>
+        <button type="button" class="btn btn-success" (click)="close()">Aceptar</button>
+    </div>
+</ng-template>

@@ -1,0 +1,112 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <!-- TOGGLER -->
+    <button class="navbar-toggler" type="button" [attr.aria-expanded]="!collapsed"
+    (click)="collapsed = !collapsed"
+    aria-controls="content" aria-label="toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <!-- /TOGGLER -->
+    <!-- NAVBAR BRAND -->
+    <div class="navbar-brand mr-3">
+        <a routerLink="/" [title]="'home.home' | translate" (click)="collapsed = true">
+            <img width="200" src="assets/images/logo_light.png" alt="OkFreelancers">
+        </a>
+    </div>
+    <!-- /NAVBAR BRAND -->
+    <!-- NAVBAR CONTENT -->
+    <div class="navbar-collapse" [class.collapse]="collapsed" id="content" [ngClass]="{'animated fadeIn faster': !collapsed}">
+        <div class="nav navbar-nav" [ngClass]="{'w-100':!user}"> <!-- w-100 only if its the default navbar (not logged user) -->
+            <!-- in order of use, for a optimized switch -->
+            <div [ngSwitch]="user?.activeRole" [ngClass]="{'w-100':!user}"> <!-- w-100 only if its the default navbar (not logged user) -->
+                <freelancer-navbar *ngSwitchCase="2" (collapsed)="collapsed = true"></freelancer-navbar>
+                <company-navbar *ngSwitchCase="1" (collapsed)="collapsed = true"></company-navbar>
+                <starter-navbar *ngSwitchCase="3" (collapsed)="collapsed = true"></starter-navbar>
+                <administrator-navbar *ngSwitchCase="42" (collapsed)="collapsed = true"></administrator-navbar>
+                <default-navbar (logged)="userLoggedActions($event)" *ngSwitchDefault></default-navbar>
+            </div>
+        </div>
+        <ul class="nav navbar-nav ml-lg-auto">
+            <li *ngIf="user" class="nav-item" routerLinkActive="active" (click)="collapsed = true">
+                <a routerLink="/messages" class="nav-link" translate>
+                    messages.messages
+                    <span *ngIf="newMessages > 0" class="badge badge-primary">{{newMessages}}</span>
+                </a>
+            </li>
+            <!-- USER DROPDOWN -->
+            <li *ngIf="user" class="nav-item" ngbDropdown>
+                <!-- DROPDOWN BUTTON -->
+                <a class="nav-link picture d-flex align-items-center" ngbDropdownToggle id="userDropdown" role="button" [title]="user.name">
+                    <img [src]="user.picture|image:'users/pictures'" alt=""
+                    class="mr-1 rounded border border-light">
+                    <span>
+                        {{user.name}}
+                    </span>
+                </a>
+                <!-- /DROPDOWN BUTTON -->
+                <!-- DROPDOWN CONTENT -->
+                <div ngbDropdownMenu class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
+                    <a ngbDropdownItem routerLink="/MyProfile/show" routerLinkActive="active" (click)="collapsed = true" translate>user.my_profile</a>
+                    <!-- ROLES -->
+                    <div *ngIf="user.roles.length > 0">
+                        <div class="dropdown-divider"></div>
+                        <a *ngIf="user.roles.length > 0" id="spaces">
+                            <b class="p-4" translate>user.spaces</b>
+                            <span ngbDropdownItem class="py-0" *ngFor="let role of user.roles" (click)="changeRole(role.id)"
+                            [ngClass]="{'active':user.activeRole == role.id}">
+                                {{ 'roles.'+role.name | translate}}
+                            </span>
+                        </a>
+                    </div>
+                    <!-- /ROLES -->
+                    <!-- AVAILABLE OPTIONS -->
+                    <div *ngIf="availableMissingRoles.length > 0">
+                        <div class="dropdown-divider"></div>
+                        <b class="p-4" translate>user.available_options</b>
+                        <a ngbDropdownItem class="py-0" *ngFor="let role of availableMissingRoles" (click)="collapsed = true"
+                        [routerLink]="[role.createLink]" routerLinkActive="active">
+                            {{ 'roles.available.'+role.name | translate}}
+                        </a>
+                    </div>
+                    <!-- /AVAILABLE OPTIONS -->
+                    <!-- BALANCE -->
+                    <div class="dropdown-divider"></div>
+                    <a ngbDropdownItem routerLink="/MyBalance" routerLinkActive="active" (click)="collapsed = true">
+                        <span translate>user.balance</span>: {{ user.balance | currency:'EUR':'symbol-narrow':null:_multilangService.activeLang }}
+                    </a>
+                    <!-- /BALANCE -->
+                    <!-- CLOSE SESSION -->
+                    <div class="dropdown-divider"></div>
+                    <a ngbDropdownItem (click)="logout()">
+                        <span class="mdi mdi-exit-to-app"></span>
+                        <span translate>user.logout</span>
+                    </a>
+                    <!-- /CLOSE SESSION -->
+                </div>
+                <!-- /DROPDOWN CONTENT -->
+            </li>
+            <!-- /USER DROPDOWN -->
+            <!-- LANGUAGES DROPDOWN -->
+            <li class="nav-item" ngbDropdown display="dynamic">
+                <!-- DROPDOWN BUTTON -->
+                <a class="nav-link" ngbDropdownToggle id="languagesDropdown" role="button">
+                    <span class="mdi mdi-translate" [title]="'lang.lang' | translate"></span>
+                </a>
+                <!-- /DROPDOWN BUTTON -->
+                <!-- DROPDOWN CONTENT -->
+                <div ngbDropdownMenu class="dropdown-menu" aria-labelledby="languagesDropdown" (click)="collapsed = true">
+                    <a ngbDropdownItem (click)="_multilangService.useLanguage('en')" 
+                    [ngClass]="{'active':_multilangService.activeLang == 'en'}" translate>
+                        lang.english
+                    </a>
+                    <a ngbDropdownItem (click)="_multilangService.useLanguage('es')"
+                    [ngClass]="{'active':_multilangService.activeLang == 'es'}" translate>
+                        lang.spanish
+                    </a>
+                </div>
+                <!-- /DROPDOWN CONTENT -->
+            </li>
+            <!-- /LANGUAGES DROPDOWN -->
+        </ul>
+    </div>
+    <!-- /NAVBAR CONTENT -->
+</nav>

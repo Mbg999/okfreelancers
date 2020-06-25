@@ -1,0 +1,10 @@
+#pick-a-freelancer + ul li:not(:first-of-type) {
+    border-top: 1px solid rgba(26, 26, 26, 0.1);
+    margin-top: 5px;
+    padding-top: 6px;
+}
+
+#pick-a-freelancer + ul {
+    max-height: 400px;
+    overflow: scroll;
+}

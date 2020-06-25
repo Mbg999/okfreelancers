@@ -1,0 +1,77 @@
+<div *ngIf="freelancers; else loading" class="animated fadeIn">
+    <h2 translate>projects.your_participating_projects</h2>
+    <div class="container-fluid">
+        <div class="row">
+            <div *ngFor="let freelancer of freelancers; let i = index" class="col-12 mb-2">
+                <div class="card">
+                    <div class="card-body">
+                        <!-- FREELANCER INFO -->
+                        <div class="container-fluid pointer" [routerLink]="['/MyFreelancerProfiles',freelancer.id,'show']">
+                            <div class="row">
+                                <div class="col-12 col-md-4">
+                                    <img [src]="freelancer.picture | image:'freelancers/pictures'"
+                                    [alt]="'miscellaneous.image' | translate" class="w-100 rounded">
+                                </div>
+                                <div class="col-12 col-md-8">
+                                    <h5 class="card-title">{{freelancer.title}}</h5>
+                                    <p class="card-text">
+                                        <span translate>categories.category</span>: {{freelancer.category_name}}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /FREELANCER INFO -->
+                        <ul ngbNav #nav="ngbNav" [(activeId)]="activeTabs[i]" class="nav-tabs mt-4">
+                            <!-- PENDING OFFERS PROJECTS -->
+                            <li [ngbNavItem]="1">
+                                <a class="text-info" ngbNavLink>
+                                    <span class="text-info" translate>projects.pending_projects</span>
+                                    <span *ngIf="freelancer.pending_offers_projects?.length > 0">
+                                        &nbsp;<span class="badge badge-primary">{{freelancer.pending_offers_projects.length}}</span>
+                                    </span>
+                                </a>
+                                <ng-template ngbNavContent>
+                                    <div *ngIf="freelancer.pending_offers_projects.length > 0; else noPendingProjects">
+                                        <div class="card-columns">
+                                            <app-project-card *ngFor="let project of freelancer.pending_offers_projects"
+                                            [project]="project"></app-project-card>
+                                        </div>
+                                    </div>
+                                    <ng-template #noPendingProjects>
+                                        <p translate>projects.no_pending_projects</p>
+                                    </ng-template>
+                                </ng-template>
+                            </li>
+                            <!-- /PENDING OFFERS PROJECTS -->
+                            <!-- IN PROGRESS OFFERS PROJECTS -->
+                            <li [ngbNavItem]="2">
+                                <a class="text-info" ngbNavLink>
+                                    <span class="text-info" translate>projects.in_progress_projects</span>
+                                    <span *ngIf="freelancer.in_progress_offers_projects.length > 0">
+                                        &nbsp;<span class="badge badge-primary">{{freelancer.in_progress_offers_projects.length}}</span>
+                                    </span>
+                                </a>
+                                <ng-template ngbNavContent>
+                                    <div *ngIf="freelancer.in_progress_offers_projects.length > 0; else noInProgressProjects">
+                                        <div class="card-columns">
+                                            <app-project-card *ngFor="let project of freelancer.in_progress_offers_projects"
+                                            [project]="project"></app-project-card>
+                                        </div>
+                                    </div>
+                                    <ng-template #noInProgressProjects>
+                                        <p translate>projects.no_in_progress_projects</p>
+                                    </ng-template>
+                                </ng-template>
+                            </li>
+                            <!-- /IN PROGRESS OFFERS PROJECTS -->
+                        </ul>
+                        <div [ngbNavOutlet]="nav"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<ng-template #loading>
+    <h1 class="mdi mdi-circle-half mdi-spin mdi-48px" translate> dialog.loading</h1>
+</ng-template>

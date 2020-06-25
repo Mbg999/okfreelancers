@@ -1,0 +1,24 @@
+<div class="modal-content animated fadeIn faster">
+    <div class="modal-header">
+        <h5 class="modal-title w-100" id="userAuthTitle">
+            <span (click)="itsLogin = true" [ngClass]="{'mActive loginTab':itsLogin}" translate>user.login</span>
+            <span (click)="itsLogin = false" [ngClass]="{'mActive registerTab':!itsLogin}" translate>user.register</span>
+        </h5>
+        <button type="button" class="close" (click)="activeModal.dismiss()" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        <input type="text" class="d-none" ngbAutofocus>
+        <!-- 
+            trick for "remove" autofocus, it has some double clicks problems
+            https://stackoverflow.com/questions/53613974/angular7-and-ngbmodal-how-to-remove-default-auto-focus
+        -->
+    </div>
+    <div class="modal-body">
+        <ng-container *ngIf="itsLogin; else register">
+            <app-login (logged)="close('logged', $event)"></app-login>
+        </ng-container>
+        <ng-template #register>
+            <app-register (registered)="close('registered', $event)"></app-register>
+        </ng-template>
+    </div>
+</div>

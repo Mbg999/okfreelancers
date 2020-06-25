@@ -1,0 +1,34 @@
+<div class="modal-content animated fadeIn faster">
+    <!-- MODAL HEADER -->
+    <div class="modal-header">
+        <!-- write or read reason title -->
+        <ng-container *ngIf="reason; else showReasonTitle"> <!-- read -->
+            <h3 translate>miscellaneous.ban_read</h3>
+        </ng-container>
+        <ng-template #showReasonTitle> <!-- write -->
+            <h3 translate>miscellaneous.ban_write</h3>
+        </ng-template>
+        <button type="button" class="close" (click)="activeModal.dismiss()" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        <input type="text" class="d-none" ngbAutofocus>
+        <!-- 
+            trick for "remove" autofocus, it has some double clicks problems
+            https://stackoverflow.com/questions/53613974/angular7-and-ngbmodal-how-to-remove-default-auto-focus
+        -->
+    </div>
+    <!-- /MODAL HEADER -->
+    <!-- MODAL BODY -->
+    <div class="modal-body">
+        <div class="form-group">
+            <textarea class="form-control" [disabled]="reason" [(ngModel)]="result"></textarea>
+        </div>
+
+        <!-- close btn -->
+        <button type="button" class="btn btn-primary" (click)="close()" translate>
+            {{(reason) ? 'miscellaneous.close' : 'miscellaneous.send'}}
+        </button>
+        <!-- /close btn -->
+    </div>
+    <!-- /MODAL BODY -->
+</div>

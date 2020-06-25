@@ -1,0 +1,38 @@
+<ul class="pagination">
+    <!-- FIRST -->
+    <li class="page-item">
+        <button *ngIf="paginator.prev_page_url" type="button" class="page-link" (click)="changePage.emit(1)">
+            <span class="mdi mdi-page-first"></span>
+        </button>
+    </li>
+    <!-- /FIRST -->
+    <!-- PREV -->
+    <li class="page-item">
+        <button *ngIf="paginator.prev_page_url" type="button" class="page-link" (click)="changePage.emit(paginator.current_page-1)">
+            <span class="mdi mdi-play-outline mdi-flip-h"></span>
+        </button>
+    </li>
+    <!-- /PREV -->
+    <!-- NUMBERS -->
+    <li *ngFor="let i of [].constructor(paginator.last_page); let page = index" class="page-item"
+    [ngClass]="{'active':paginator.current_page == page+1}">
+        <button type="button" class="page-link" [disabled]="paginator.current_page == page+1" (click)="changePage.emit(page+1)">
+            {{page+1}}
+        </button>
+    </li>
+    <!-- /NUMBERS -->
+    <!-- NEXT -->
+    <li class="page-item">
+        <button *ngIf="paginator.next_page_url" type="button" class="page-link" (click)="changePage.emit(paginator.current_page+1)">
+            <span class="mdi mdi-play-outline"></span>
+        </button>
+    </li>
+    <!-- /NEXT -->
+    <!-- LAST -->
+    <li class="page-item">
+        <button *ngIf="paginator.next_page_url" type="button" class="page-link" (click)="changePage.emit(paginator.last_page)">
+            <span class="mdi mdi-page-last"></span>
+        </button>
+    </li>
+    <!-- /LAST -->
+</ul>

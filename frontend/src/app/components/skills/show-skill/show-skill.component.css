@@ -1,0 +1,10 @@
+.jumbotron {
+    background-size: cover;
+    background-blend-mode: hard-light;
+    background-color: rgba(0,0,0,0.2); /* better effect for blend-mode */
+}
+
+.jumbotron > .position-absolute {
+    bottom: 0;
+    left: 0;
+}

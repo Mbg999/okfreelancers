@@ -1,0 +1,15 @@
+@media (min-width: 992px) {
+    .picture {
+        padding-top: 0;
+        padding-bottom: 0;
+    }
+}
+
+.picture img {
+    width: 40px;
+    height: 40px;
+}
+
+.navbar-collapse {
+    z-index: 999; /* this fix the wrong overposition of dropdown */
+}

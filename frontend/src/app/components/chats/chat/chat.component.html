@@ -1,0 +1,327 @@
+<div class="row">
+    <div *ngIf="originalChats; else loading" class="col-12 max-height animated fadeIn pb-6">
+        <section class="row">
+            <!-- CHAT LIST EXTRA SMALL SCREEN TO MD -->
+            <div class="d-block d-md-none col-12 p-0">
+                <nav class="navbar navbar-expand-lg navbar-light bg-light">
+                    <!-- TOGGLER -->
+                    <button class="navbar-toggler" type="button" [attr.aria-expanded]="!collapsed"
+                    (click)="collapsed = !collapsed"
+                    aria-controls="content" aria-label="toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <!-- /TOGGLER -->
+                    <!-- YOUR CHAT LIST -->
+                    <p class="pt-3" translate>chats.list</p>
+                    <!-- /YOUR CHAT LIST -->
+                    <!-- NAVBAR CONTENT -->
+                    <div class="navbar-collapse w-100" [class.collapse]="collapsed" id="content" [ngClass]="{'animated fadeIn faster': !collapsed}">
+                        <!-- SEARCH BAR -->
+                        <form class="form-inline">
+                            <div class="input-group w-100 position-relative searchBar">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">
+                                        <span class="mdi mdi-card-search"></span>
+                                    </span>
+                                </div>
+                                <input class="form-control" id="searchBar" type="text" #s (keyup)="search(s.value)"
+                                [placeholder]="'miscellaneous.search_by_name_or_surnames' | translate" aria-label="Search">
+                                <span class="mdi mdi-close-thick" [ngClass]="{'d-none':s.value.length < 1}"
+                                (click)="clearSearchBar(s)"></span>
+                            </div>
+                        </form>
+                        <!-- /SEARCH BAR -->
+                        <!-- CHATS -->
+                        <div class="bg-dark chatList">
+                            <ul *ngIf="chats.length > 0; else noChats" class="list-group">
+                                <li *ngFor="let chat of chats; let i = index" class="list-group-item border-bottom py-2 pointer"
+                                (click)="viewChat(i)" [ngClass]="{'active-chat':selectedIndex == i}">
+                                    <div class="row">
+                                        <!-- PICTURE -->
+                                        <div class="col-2 p-1">
+                                            <img [src]="chat.user.picture | image:'users/pictures'"
+                                            [alt]="'miscellaneous.image' | translate" class="w-100 rounded-circle">
+                                        </div>
+                                        <!-- /PICTURE -->
+                                        <div class="col-10">
+                                            <!-- NAME AND SURNAMES -->
+                                            <h6 class="m-0">{{chat.user.name}} {{chat.user.surnames}}</h6>
+                                            <!-- HAS LAST MESSAGE -->
+                                            <p *ngIf="chat.last_message; else noMsg" class="m-0">
+                                                <!-- OTHER USER MESSAGE -->
+                                                <small *ngIf="user.id != chat.last_message.sender_id; else itsMyMsg"
+                                                [ngClass]="{'text-danger':!chat.last_message.read}" class="d-block text">
+                                                    <!-- INTERNAL PROCESS MESSAGE -->
+                                                    <span *ngIf="chat.last_message.text.startsWith('OkFreelancersInternal:'); else normalTextMessage"
+                                                    [innerHTML]="chat.last_message.text | processMessage:true"></span>
+                                                    <!-- /INTERNAL PROCESS MESSAGE -->
+                                                    <!-- NORMAL TEXT MESSAGE -->
+                                                    <ng-template #normalTextMessage>
+                                                        <span>{{chat.last_message.text}}</span>
+                                                    </ng-template>
+                                                    <!-- /NORMAL TEXT MESSAGE -->
+                                                </small>
+                                                <!-- /OTHER USER MESSAGE -->
+                                                <!-- MY MESSAGE -->
+                                                <ng-template #itsMyMsg>
+                                                    <small class="text">
+                                                        <!-- MESSAGE STATUS ICONS -->
+                                                        <span *ngIf="chat.last_message.created_at; else itsSending">
+                                                            <span *ngIf="chat.last_message.read; else markAsUnread" class="mdi mdi-check-all chatList_status_icon"></span>
+                                                            <ng-template #markAsUnread>
+                                                                <span class="mdi mdi-check chatList_status_icon"></span>
+                                                            </ng-template>
+                                                        </span>
+                                                        <ng-template #itsSending>
+                                                            <span *ngIf="chat.last_message.failed; else sending" class="mdi mdi-close text-danger chatList_status_icon"></span>
+                                                            <ng-template #sending>
+                                                                <span class="mdi mdi-loading mdi-spin chatList_status_icon"></span>
+                                                            </ng-template>
+                                                        </ng-template>
+                                                        <!-- /MESSAGE STATUS ICONS -->
+                                                        <!-- INTERNAL PROCESS MESSAGE -->
+                                                        <span *ngIf="chat.last_message.text.startsWith('OkFreelancersInternal:'); else normalTextMessage"
+                                                        [innerHTML]="' '+(chat.last_message.text | processMessage:true)"></span>
+                                                        <!-- /INTERNAL PROCESS MESSAGE -->
+                                                        <!-- NORMAL TEXT MESSAGE -->
+                                                        <ng-template #normalTextMessage>
+                                                            <span> {{chat.last_message.text}}</span>
+                                                        </ng-template>
+                                                        <!-- /NORMAL TEXT MESSAGE -->
+                                                    </small>
+                                                </ng-template>
+                                                <!-- /MY MESSAGE -->
+                                                <!-- UNREADS COUNT -->
+                                                <span *ngIf="chat.unreads" class="unreads_wrapper">
+                                                    <span class="badge badge-pill badge-danger float-right">{{chat.unreads}}</span>
+                                                </span>
+                                                <!-- /UNREADS COUNT -->
+                                            </p>
+                                            <!-- /HAS LAST MESSAGE -->
+                                            <!-- HASN'T LAST MESSAGE -->
+                                            <ng-template #noMsg>
+                                                <small translate>chats.no_msg</small>
+                                            </ng-template>
+                                            <!-- /HASN'T LAST MESSAGE -->
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                            <ng-template #noChats>
+                                <h6 class="text-center pt-2" translate>chats.empty</h6>
+                            </ng-template>
+                        </div>
+                        <!-- /CHATS -->
+                    </div>
+                    <!-- /NAVBAR CONTENT -->
+                </nav>
+            </div>
+            <!-- /CHAT LIST EXTRA SMALL SCREEN TO MD -->
+            <!-- CHAT LIST MD SCREEN OR LONGER -->
+            <div class="d-none d-md-block col-4 p-0">
+                <!-- SEARCH BAR -->
+                <form class="form-inline">
+                    <div class="input-group w-100 position-relative searchBar">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">
+                                <span class="mdi mdi-card-search"></span>
+                            </span>
+                        </div>
+                        <input class="form-control" id="searchBar1" type="text" #s1 (keyup)="search(s1.value)"
+                        [placeholder]="'miscellaneous.search_by_name_or_surnames' | translate" aria-label="Search">
+                        <span class="mdi mdi-close-thick" [ngClass]="{'d-none':s1.value.length < 1}"
+                        (click)="clearSearchBar(s1)"></span>
+                    </div>
+                </form>
+                <!-- /SEARCH BAR -->
+                <!-- CHATS -->
+                <div class="bg-dark chatList">
+                    <ul *ngIf="chats.length > 0; else noChats" class="list-group">
+                        <li *ngFor="let chat of chats; let i = index" class="list-group-item border-bottom py-2 pointer"
+                        (click)="viewChat(i)" [ngClass]="{'active-chat':selectedIndex == i}">
+                            <div class="container-fluid">
+                                <div class="row">
+                                    <div class="col-2 p-0">
+                                        <img [src]="chat.user.picture | image:'users/pictures'"
+                                        [alt]="'miscellaneous.image' | translate" class="w-100 rounded-circle">
+                                    </div>
+                                    <div class="col-10">
+                                        <h6 class="m-0">{{chat.user.name}} {{chat.user.surnames}}</h6>
+                                        <!-- HAS LAST MESSAGE -->
+                                        <p *ngIf="chat.last_message; else noMsg" class="m-0">
+                                            <!-- OTHER USER MESSAGE -->
+                                            <small *ngIf="user.id != chat.last_message.sender_id; else itsMyMsg"
+                                            [ngClass]="{'text-danger':!chat.last_message.read}" class="text">
+                                                <!-- INTERNAL PROCESS MESSAGE -->
+                                                <span *ngIf="chat.last_message.text.startsWith('OkFreelancersInternal:'); else normalTextMessage"
+                                                [innerHTML]="chat.last_message.text | processMessage:true"></span>
+                                                <!-- /INTERNAL PROCESS MESSAGE -->
+                                                <!-- NORMAL TEXT MESSAGE -->
+                                                <ng-template #normalTextMessage>
+                                                    <span>{{chat.last_message.text}}</span>
+                                                </ng-template>
+                                                <!-- /NORMAL TEXT MESSAGE -->
+                                            </small>
+                                            <!-- /OTHER USER MESSAGE -->
+                                            <!-- MY MESSAGE -->
+                                            <ng-template #itsMyMsg>
+                                                <small class="text">
+                                                    <!-- MESSAGE STATUS ICONS -->
+                                                    <span *ngIf="chat.last_message.created_at; else itsSending">
+                                                        <span *ngIf="chat.last_message.read; else markAsUnread" class="mdi mdi-check-all chatList_status_icon"></span>
+                                                        <ng-template #markAsUnread>
+                                                            <span class="mdi mdi-check chatList_status_icon"></span>
+                                                        </ng-template>
+                                                    </span>
+                                                    <ng-template #itsSending>
+                                                        <span *ngIf="chat.last_message.failed; else sending" class="mdi mdi-close text-danger chatList_status_icon"></span>
+                                                        <ng-template #sending>
+                                                            <span class="mdi mdi-loading mdi-spin chatList_status_icon"></span>
+                                                        </ng-template>
+                                                    </ng-template>
+                                                    <!-- /MESSAGE STATUS ICONS -->
+                                                    <!-- INTERNAL PROCESS MESSAGE -->
+                                                    <span *ngIf="chat.last_message.text.startsWith('OkFreelancersInternal:'); else normalTextMessage"
+                                                    [innerHTML]="chat.last_message.text | processMessage:true"></span>
+                                                    <!-- /INTERNAL PROCESS MESSAGE -->
+                                                    <!-- NORMAL TEXT MESSAGE -->
+                                                    <ng-template #normalTextMessage>
+                                                        <span>{{chat.last_message.text}}</span>
+                                                    </ng-template>
+                                                    <!-- /NORMAL TEXT MESSAGE -->
+                                                </small>
+                                            </ng-template>
+                                            <!-- /MY MESSAGE -->
+                                            <!-- UNREADS COUNT -->
+                                            <span *ngIf="chat.unreads">
+                                                <span class="badge badge-pill badge-danger float-right">{{chat.unreads}}</span>
+                                            </span>
+                                            <!-- /UNREADS COUNT -->
+                                        </p>
+                                        <!-- /HAS LAST MESSAGE -->
+                                        <!-- HASN'T LAST MESSAGE -->
+                                        <ng-template #noMsg>
+                                            <small translate>chats.no_msg</small>
+                                        </ng-template>
+                                        <!-- /HASN'T LAST MESSAGE -->
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                    <ng-template #noChats>
+                        <h6 class="text-center pt-2" translate>chats.empty</h6>
+                    </ng-template>
+                </div>
+                <!-- /CHATS -->
+            </div>
+            <!-- /CHAT LIST MD SCREEN OR LONGER -->
+            <!-- CHAT -->
+            <div class="col-12 col-md-8 p-0">
+                <!-- CHAT HEADER -->
+                <div class="bg-light pb-1 pt-2 px-2 border-left chat-header border-top">
+                    <div *ngIf="selectedChat; else pickAChat" class="pointer" [routerLink]="[(selectedChat.user.id != user.id) ? '/user/'+selectedChat.user.email : '/MyProfile/show']">
+                        <div class="container-fluid">
+                            <div class="row">
+                                <div class="col-2 col-lg-1">
+                                    <img [src]="selectedChat.user.picture | image:'users/pictures'"
+                                    [alt]="'miscellaneous.image' | translate" class="rounded-circle">
+                                </div>
+                                <div class="col-10 col-lg-11">
+                                    <h3 class="ml-1">{{selectedChat.user.name}} {{selectedChat.user.surnames}}</h3></div>
+                                </div>
+                            </div>
+                        </div>
+                    <ng-template #pickAChat>
+                        <h3 class="pl-3" translate>chats.pick_a_chat</h3>
+                    </ng-template>
+                </div>
+                <!-- /CHAT HEADER -->
+                <!-- CHAT BOX -->
+                <div class="chat-box bg-dark" #chat_box>
+                    <div *ngIf="messages">
+                        <div *ngIf="messagesPaginator.current_page < messagesPaginator.last_page && !itsLoading; else itsTheLastMsg"
+                        infiniteScroll
+                        [infiniteScrollUpDistance]="4"
+                        [infiniteScrollThrottle]="50"
+                        [infiniteScrollContainer]="'.chat-box'"
+                        [fromRoot]="true"
+                        (scrolledUp)="getMessagesNextPage()"></div>
+                        <ng-template #itsTheLastMsg>
+                            <h6 *ngIf="!itsLoading" class="text-center text-light" translate>chats.last_msg</h6>
+                        </ng-template>
+                        <!-- LOADING -->
+                        <h1 *ngIf="itsLoading" class="mdi mdi-circle-half mdi-spin mdi-48px" translate> dialog.loading</h1>
+                        <!-- /LOADING -->
+                        <div *ngFor="let message of messages" class="message py-1">
+                            <p *ngIf="message.sender_id != user.id; else ownMessage"
+                            class="badge badge-primary float-left text-left m-0 ml-1 animated fadeIn">
+                                <span *ngIf="message.text.startsWith('OkFreelancersInternal:'); else normalTextMessage" class="d-block" [innerHTML]="message.text | processMessage"></span>
+                                <ng-template #normalTextMessage>
+                                    <span class="d-block">{{message.text}}</span>
+                                </ng-template>
+                                <span class="border-top d-block w-100 mt-1">
+                                    <small class="float-left">{{message.created_at | date:'hh:mm:ss dd MMMM yyyy':null:_multilangService.activeLang}}</small>
+                                </span>
+                            </p>
+                            <ng-template #ownMessage>
+                                <p class="badge badge-secondary float-right text-left m-0 mr-1 animated fadeIn">
+                                    <span *ngIf="message.text.startsWith('OkFreelancersInternal:'); else normalTextMessage" class="d-block" [innerHTML]="message.text | processMessage"></span>
+                                    <ng-template #normalTextMessage>
+                                        <span class="d-block">{{message.text}}</span>
+                                    </ng-template>
+                                    <span class="border-top d-block w-100 mt-1">
+                                        <small class="float-right">{{message.created_at | date:'hh:mm:ss dd MMMM yyyy':null:_multilangService.activeLang}}</small>
+                                        <!-- MESSAGE STATUS ICONS -->
+                                        <small class="float-left">
+                                            <span *ngIf="message.created_at; else itsSending">
+                                                <span *ngIf="message.read; else markAsUnread" class="mdi mdi-check-all"></span>
+                                                <ng-template #markAsUnread>
+                                                    <span class="mdi mdi-check"></span>
+                                                </ng-template>
+                                            </span>
+                                            <ng-template #itsSending>
+                                                <span *ngIf="message.failed; else sending" class="mdi mdi-close text-danger"></span>
+                                                <ng-template #sending>
+                                                    <span class="mdi mdi-loading mdi-spin"></span>
+                                                </ng-template>
+                                            </ng-template>
+                                        </small>
+                                        <!-- /MESSAGE STATUS ICONS -->
+                                    </span>
+                                </p>
+                            </ng-template>
+                        </div>
+                    </div>
+                </div>
+                <!-- /CHAT BOX -->
+                <!-- CHAT INPUT -->
+                <form [formGroup]="messageForm" novalidate (submit)="sendMessage()">
+                    <div class="form-group">
+                        <div class="input-group">
+                            <input type="text" #text_box class="form-control chat-input" maxlength="1000" formControlName="text"
+                            [placeholder]="'chats.your_msg' | translate">
+                            <div class="input-group-append bg-primary">
+                                <button type="submit" [disabled]="messageForm.invalid"
+                                [ngClass]="{'bg-primary border-primary': messageForm.valid,
+                                'bg-secondary border-secondary': messageForm.invalid}"
+                                class="input-group-text">
+                                    <span class="mdi mdi-send text-light"></span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                <!-- /CHAT INPUT -->
+            </div>
+            <!-- /CHAT -->
+        </section>
+    </div>
+    <!-- LOADING -->
+    <ng-template #loading>
+        <div class="col-12">
+            <h1 class="mdi mdi-circle-half mdi-spin mdi-48px" translate> dialog.loading</h1>
+        </div>
+    </ng-template>
+    <!-- /LOADING -->
+</div>

@@ -1,0 +1,120 @@
+<!-- TITLE + CREATE BTN SKILL -->
+<div *ngIf="originalSkills"> <!-- hide until skills finish loading -->
+    <h1 class="display-4" translate>skills.skills</h1>
+    <button type="button" class="btn btn-success btn-block" (click)="create()">
+        <span class="mdi mdi-plus" translate> skills.new_skill</span>
+    </button>
+</div>
+<!-- /TITLE + CREATE BTN SKILL -->
+<!-- SEARCH BAR + TABLE + LOADING + NO SKILLS -->
+<div *ngIf="originalSkills?.length > 0; else screensaver" class="animated fadeIn">
+    <!-- SEARCH BAR -->
+    <form class="form-inline">
+        <div class="input-group w-100 position-relative searchBar">
+            <div class="input-group-prepend">
+                <span class="input-group-text">
+                    <span class="mdi mdi-card-search"></span>
+                </span>
+            </div>
+            <input class="form-control" id="searchBar" type="text" #s (keyup)="search(s.value)"
+            [placeholder]="'miscellaneous.search_by_name_or_cat' | translate" aria-label="Search">
+            <span class="mdi mdi-close-thick" [ngClass]="{'d-none':s.value.length < 1}"
+            (click)="clearSearchBar(s)"></span>
+        </div>
+    </form>
+    <!-- /SEARCH BAR -->
+    <!-- TABLE -->
+    <p-table [value]="skills" [responsive]="true" [autoLayout]="true"
+    [paginator]="true" [rows]="5" [totalRecords]="skills.length"
+    [rowsPerPageOptions]="[5,10,20,30]" dataKey="id">
+        <ng-template pTemplate="header">
+            <tr>
+                <th [pSortableColumn]="'id'">
+                    ID
+                    <p-sortIcon [field]="'id'"></p-sortIcon>
+                </th>
+                <th [pSortableColumn]="'name_en'" translate>
+                    miscellaneous.name_en
+                    <p-sortIcon [field]="'name_en'"></p-sortIcon>
+                </th>
+                <th [pSortableColumn]="'name_es'" translate>
+                    miscellaneous.name_es
+                    <p-sortIcon [field]="'name_es'"></p-sortIcon>
+                </th>
+                <th [pSortableColumn]="'category_name'" translate>
+                    categories.category
+                    <p-sortIcon [field]="'category_name'"></p-sortIcon>
+                </th>
+                <th [pSortableColumn]="'freelancers_count'">
+                    Freelancers
+                    <p-sortIcon [field]="'freelancers_count'"></p-sortIcon>
+                </th>
+                <th [pSortableColumn]="'projects_count'" translate>
+                    projects.projects
+                    <p-sortIcon [field]="'projects_count'"></p-sortIcon>
+                </th>
+                <th [pSortableColumn]="'deleted_at'" translate>
+                    miscellaneous.active
+                    <p-sortIcon [field]="'deleted_at'"></p-sortIcon>
+                </th>
+                <th translate>
+                    miscellaneous.options
+                </th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-skill let-i="rowIndex">
+            <tr>
+                <td>{{skill.id}}</td>
+                <td>{{skill.name_en}}</td>
+                <td>{{skill.name_es}}</td>
+                <td>{{skill.category_name}}</td>
+                <td>{{skill.freelancers_count}}</td>
+                <td>{{skill.projects_count}}</td>
+                <td>
+                    <ng-container *ngIf="skill.deleted_at; else isActivated">
+                        <p class="text-danger" translate>miscellaneous.currently_deactived</p>
+                        <button type="button" class="btn btn-success btn-block"
+                        (click)="toggleDeleted_at(i)">
+                            <span class="mdi mdi-eye-check" translate> miscellaneous.activate</span>
+                        </button>
+                    </ng-container>
+                    <ng-template #isActivated>
+                        <p class="text-success" translate>miscellaneous.currently_actived</p>
+                        <button type="button" class="btn btn-danger btn-block"
+                        (click)="toggleDeleted_at(i)">
+                            <span class="mdi mdi-eye-off" translate> miscellaneous.deactivate</span>
+                        </button>
+                    </ng-template>
+                </td>
+                <td>
+                    <div class="btn-group-vertical w-100" role="group" aria-label="Options">
+                        <button type="button" class="btn btn-warning" 
+                        (click)="update(i)">
+                            <span class="mdi mdi-lead-pencil" translate> miscellaneous.edit</span>
+                        </button>
+                        <button type="button" class="btn btn-dark" 
+                        (click)="delete(i)">
+                            <span class="mdi mdi-trash-can-outline" translate> miscellaneous.delete</span>
+                        </button>
+                    </div>
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+</div>
+<!-- /TABLE -->
+<!-- LOADING + NO SKILLS -->
+<ng-template #screensaver>
+    <!-- LOADING -->
+    <ng-container *ngIf="originalSkills; else loading">
+        <h5 translate>skills.no_skills</h5>
+    </ng-container>
+    <!-- /LOADING -->
+    <!-- NO SKILLS -->
+    <ng-template #loading>
+        <h1 class="mdi mdi-circle-half mdi-spin mdi-48px" translate> dialog.loading</h1>
+    </ng-template>
+    <!-- /NO SKILLS -->
+</ng-template>
+<!-- /LOADING + NO SKILLS -->
+<!-- /SEARCH BAR + TABLE + LOADING + NO SKILLS -->

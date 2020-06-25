@@ -1,0 +1,41 @@
+<div *ngIf="itsReady; else loading" class="animated fadeIn">
+    <div *ngIf="action == 'edit'; else show">
+        <!-- ACTION BUTTONS -->
+        <div *ngIf="user" class="btn-group mb-3" role="group" aria-label="Action buttons">
+            <!-- SHOW -->
+            <button (click)="takeAction('show')" class="btn btn-primary">
+                <span class="mdi mdi-eye" translate> miscellaneous.show</span>
+            </button>
+            <!-- /SHOW -->
+            <!-- DEACTIVATE -->
+            <button type="button" class="btn btn-danger" (click)="deactivate()">
+                <span class="mdi mdi-eye-off" translate> miscellaneous.deactivate_profile</span>
+            </button>
+            <!-- /DEACTIVATE -->
+            <!-- DELETE -->
+            <button type="button" class="btn btn-dark" (click)="delete()" translate>
+                <span class="mdi mdi-trash-can-outline" translate> miscellaneous.delete_profile</span>
+            </button>
+            <!-- /DELETE -->
+        </div>
+        <!-- /ACTION BUTTONS -->
+        <!-- UPDATE USER FORM -->
+        <app-update-user-form
+        [user]="user"
+        [takenEmail]="takenEmail"
+        [uploadingPicture]="uploadingPicture"
+        (updateUser)="updateUser($event)"
+        (changePassword)="changePassword($event)"
+        (changePicture)="changePicture($event)"></app-update-user-form>
+        <!-- /UPDATE USER FORM -->
+    </div>
+    <ng-template #show>
+        <button (click)="takeAction('edit')" class="btn btn-warning mb-2">
+            <span class="mdi mdi-lead-pencil" translate> miscellaneous.edit</span>
+        </button>
+        <app-show-user [user]="user" [itsMyProfile]="true"></app-show-user>
+    </ng-template>
+</div>
+<ng-template #loading>
+    <h1 class="mdi mdi-circle-half mdi-spin mdi-48px" translate> dialog.loading</h1>
+</ng-template>

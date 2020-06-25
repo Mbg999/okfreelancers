@@ -1,0 +1,82 @@
+<div *ngIf="company; else loading" class="container animated fadeIn">
+    <div class="row">
+        <div class="col-12">
+            <h1 class="mb-5 text-center">{{company.name}}</h1>
+        </div>
+        <div class="col-12">
+            <div class="row">
+                <!-- LEFT SECTION -->
+                <div class="col-12 col-md-4 col-xl-3 py-3 border-right text-center">
+                    <!-- LOGO -->
+                    <img [src]="company.logo | image:'companies/logos'" class="w-100 rounded logo">
+                    <!-- /LOGO -->
+                    <!-- TOWN, REGION, COUNTRY -->
+                    <address class="mx-auto border-top pt-3 mt-3">
+                        <span class="d-block">{{company.town}}, {{company.zip}}</span>
+                        <span class="d-block">{{company.region}}, {{company.country}}</span>
+                    </address>
+                    <!-- /TOWN, REGION, COUNTRY -->
+                    <!-- WEB & SOCIAL NETWORKS -->
+                    <div class="border-top pt-3 mt-3" *ngIf="company.web || company.github || company.linkedin || company.twitter"></div>
+                    <div class="social-networks">
+                        <div *ngIf="company.web">
+                            <a [href]="company.web" target="_blank">
+                                <span class="mdi mdi-web" translate> miscellaneous.web</span>
+                            </a>
+                        </div>
+                        <div *ngIf="company.github">
+                            <a [href]="company.github" target="_blank">
+                                <span class="mdi mdi-github"> GitHub</span>
+                            </a>
+                        </div>
+                        <div *ngIf="company.linkedin">
+                            <a [href]="company.linkedin" target="_blank">
+                                <span class="mdi mdi-linkedin"> LinkedIn</span>
+                            </a>
+                        </div>
+                        <div *ngIf="company.twitter">
+                            <a [href]="company.twitter" target="_blank">
+                                <span class="mdi mdi-twitter"> Twitter</span>
+                            </a>
+                        </div>
+                    </div>
+                    <!-- /WEB & SOCIAL NETWORKS -->
+                    <!-- USER INFO -->
+                    <div class="border-top pt-3 mt-3">
+                        <div class="card bg-light">
+                            <div class="card-body py-2">
+                                <!-- PICTURE, NAME, SURNAMES -->
+                                <div class="rounded py-2 pointer" [routerLink]="[(!auth_user || user.id != auth_user.id) ? '/user/'+user.email : '/MyProfile/show']">
+                                    <p class="m-0 p-0" translate>user.owner</p>
+                                    <img [src]="user.picture | image:'users/pictures'" class="w-50 mx-auto my-3 rounded-circle">
+                                    <p class="p-0 m-0 h5">{{user.name}} {{user.surnames}}</p>
+                                </div>
+                                <!-- /PICTURE, NAME, SURNAME -->
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /USER INFO -->
+                </div>
+                <!-- /LEFT SECTION -->
+                <!-- RIGHT SECTION -->
+                <div class="col-12 col-md-8 col-xl-9 py-3">
+                    <h2 class="h4" translate>miscellaneous.description</h2>
+                    <div class="edited-text" [innerHTML]="company.description | safe:'html'"></div>
+                    <!-- PROJECTS -->
+                    <div *ngIf="projects?.length > 0" class="mt-4">
+                        <h3 translate>projects.projects</h3>
+                        <div class="card-columns column-count-xl-3">
+                            <app-project-card *ngFor="let project of projects"
+                            [project]="project" [hideLogo]="true" [itsMyProject]="itsMyProfile"></app-project-card>
+                        </div>
+                    </div>
+                    <!-- /PROJECTS -->
+                </div>
+                <!-- /RIGHT SECTION -->
+            </div>
+        </div>
+    </div>
+</div>
+<ng-template #loading>
+    <h1 class="mdi mdi-circle-half mdi-spin mdi-48px" translate> dialog.loading</h1>
+</ng-template>

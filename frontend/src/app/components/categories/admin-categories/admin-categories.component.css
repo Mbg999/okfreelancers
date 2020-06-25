@@ -1,0 +1,19 @@
+/* Small devices (landscape phones, 576px and up) */
+ @media only screen and (min-width: 576px) and (max-width: 767px) { 
+    td .btn {
+        font-size: 11px;
+    }
+}
+
+.breadcrumb-item:not(.active) {
+    cursor: pointer;
+    color: #00b5d7;
+}
+
+.breadcrumb-item:not(.active):hover {
+    text-decoration: underline;
+}
+
+.jumbotron {
+    background-size: cover;
+}

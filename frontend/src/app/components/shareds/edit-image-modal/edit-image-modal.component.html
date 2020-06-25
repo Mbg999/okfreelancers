@@ -1,0 +1,40 @@
+<div class="modal-content animated fadeIn faster">
+    <!-- MODAL BODY -->
+    <div class="modal-body">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12">
+                    <p translate>miscellaneous.image_modal.zoom</p>
+                    <p translate>miscellaneous.image_modal.quality</p>
+                    <div class="d-flex justify-content-center">
+                        <img #image [src]="img" class="w-50 h-50" [ngClass]="{'invisible': !imageDestination}">
+                    </div>
+                </div>
+                <div class="col-12 text-center">
+                    <img *ngIf="imageDestination; else loading" [src]="imageDestination" class="rounded"
+                    [ngClass]="size.previewClass">
+                    <!-- LOADING -->
+                    <ng-template #loading>
+                        <h1 class="mdi mdi-circle-half mdi-spin mdi-48px" translate> dialog.loading</h1>
+                    </ng-template>
+                    <!-- /LOADING -->
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /MODAL BODY -->
+    <!-- MODAL FOOTER -->
+    <div class="modal-footer d-flex justify-content-between">
+        <!-- SAVE BTN -->
+        <button type="button" class="btn btn-primary" (click)="saveFile()">
+            <span class="mdi mdi-save" translate> miscellaneous.save</span>
+        </button>
+        <!-- /SAVE BTN -->
+        <!-- SAVE BTN -->
+        <button type="button" class="btn btn-danger" (click)="activeModal.dismiss()">
+            <span class="mdi mdi-cross" translate> miscellaneous.cancel</span>
+        </button>
+        <!-- /SAVE BTN -->
+    </div>
+    <!-- /MODAL FOOTER -->
+</div>

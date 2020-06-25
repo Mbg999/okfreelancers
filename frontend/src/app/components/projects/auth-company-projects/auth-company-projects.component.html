@@ -1,0 +1,50 @@
+<div *ngIf="itsReady; else loading" class="animated fadeIn">
+    <div *ngIf="action == 'create' || action == 'edit'; else show">
+        <!-- ACTION BUTTONS -->
+        <div *ngIf="project" class="btn-group mb-3" role="group" aria-label="Action buttons">
+            <!-- SHOW -->
+            <button (click)="takeAction('show')" class="btn btn-primary">
+                <span class="mdi mdi-eye" translate> miscellaneous.show</span>
+            </button>
+            <!-- /SHOW -->
+            <!-- ACTIVATE -->
+            <button *ngIf="project.deleted_at; else deactivateBtn" type="button" class="btn btn-success" (click)="activate()">
+                <span class="mdi mdi-eye-check" translate> projects.activate</span>
+            </button>
+            <!-- /ACTIVATE -->
+            <ng-template #deactivateBtn>
+                <!-- DEACTIVATE -->
+                <button type="button" class="btn btn-danger" (click)="deactivate()">
+                    <span class="mdi mdi-eye-off" translate> projects.deactivate</span>
+                </button>
+                <!-- /DEACTIVATE -->
+            </ng-template>
+            <!-- DELETE -->
+            <button type="button" class="btn btn-dark" (click)="delete()" translate>
+                <span class="mdi mdi-trash-can-outline" translate> projects.delete</span>
+            </button>
+            <!-- /DELETE -->
+        </div>
+        <!-- /ACTION BUTTONS -->
+        <app-project-form [project]="project" (result)="send($event)"></app-project-form>
+    </div>
+    <ng-template #show>
+        <div *ngIf="project.ban; else editable">
+            <p class="alert alert-danger mb-2">
+                <b><span translate>projects.banned</span>:</b>
+                <span class="d-block">"{{ project.ban_reason }}"</span>
+                <span translate>projects.banned_info</span>
+            </p>
+        </div>
+        <ng-template #editable>
+            <button (click)="takeAction('edit')" class="btn btn-warning mb-2">
+                <span class="mdi mdi-lead-pencil" translate> miscellaneous.edit</span>
+            </button>
+            <p *ngIf="project.deleted_at"><small class="text-danger" translate>projects.is_deactivated</small></p>
+        </ng-template>
+        <app-show-company-project [project]="project" (toggleProjectFinished)="toggleProjectFinished()"></app-show-company-project>
+    </ng-template>
+</div>
+<ng-template #loading>
+    <h1 class="mdi mdi-circle-half mdi-spin mdi-48px" translate> dialog.loading</h1>
+</ng-template>

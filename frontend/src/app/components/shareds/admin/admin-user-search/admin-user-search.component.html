@@ -1,0 +1,11 @@
+<div class="form-group">
+    <label for="searchUser" translate>user.select_owner</label>
+    <input list="users" id="searchUser" class="form-control"
+    #u (keyup)="search(u.value)" 
+    (blur)="select(u.value)"
+    [placeholder]="'user.search_by_email' | translate">
+    <datalist id="users">
+        <option *ngFor="let user of users" [value]="user.id+' - '+user.email"></option>
+    </datalist>
+    <small *ngIf="user_idError" class="text-danger">{{user_idError}}</small>
+</div>

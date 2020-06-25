@@ -1,0 +1,88 @@
+<div *ngIf="offers">
+    <ul ngbNav #nav="ngbNav" [(activeId)]="activeTab" class="nav-tabs mt-4">
+        <!-- AVAILABLE OFFERS -->
+        <li [ngbNavItem]="1">
+            <a class="text-info" ngbNavLink>
+                <span translate>offers.available_offers</span>
+                <span *ngIf="offers.available_offers.length > 0 && !project_finished">
+                    &nbsp;<span class="badge badge-primary">{{offers.available_offers.length}}</span>
+                </span>
+            </a>
+            <ng-template ngbNavContent>
+                <div>
+                    <div *ngIf="offers.available_offers.length > 0 && !project_finished; else noOffers" id="offer.id">
+                        <div *ngFor="let offer of offers.available_offers; let i = index">
+                            <app-available-offer [offer]="offer" (acceptOffer)="acceptAnOffer(i)"></app-available-offer>
+                        </div>
+                    </div>
+                    <ng-template #noOffers>
+                        <p translate>offers.no_available_offers</p>
+                    </ng-template>
+                </div>
+            </ng-template>
+        </li>
+        <!-- /AVAILABLE OFFERS -->
+        <!-- PENDING OFFERS -->
+        <li [ngbNavItem]="2">
+            <a class="text-info" ngbNavLink>
+                <span translate>offers.pending_offers</span>
+                <span *ngIf="offers.pending_offers.length > 0 && !project_finished">
+                    &nbsp;<span class="badge badge-primary">{{offers.pending_offers.length}}</span>
+                </span>
+            </a>
+            <ng-template ngbNavContent>
+                <div *ngIf="offers.pending_offers.length > 0; else noOffers">
+                    <div *ngFor="let offer of offers.pending_offers; let i = index" id="offer.id" class="card w-100">
+                        <app-pending-offer [offer]="offer" (cancelOffer)="cancelAnOffer(i)"></app-pending-offer>
+                    </div>
+                </div>
+                <ng-template #noOffers>
+                    <p translate>offers.no_pending_offers</p>
+                </ng-template>
+            </ng-template>
+        </li>
+        <!-- /PENDING OFFERS -->
+        <!-- IN PROGRESS OFFERS -->
+        <li [ngbNavItem]="3">
+            <a class="text-info" ngbNavLink>
+                <span translate>offers.in_progress_offers</span>
+                <span *ngIf="offers.in_progress_offers.length > 0 && !project_finished">
+                    &nbsp;<span class="badge badge-primary">{{offers.in_progress_offers.length}}</span>
+                </span>
+            </a>
+            <ng-template ngbNavContent>
+                <div *ngIf="offers.in_progress_offers.length > 0; else noOffers">
+                    <div *ngFor="let offer of offers.in_progress_offers; let i = index" id="offer.id">
+                        <app-in-progress-offer [offer]="offer" [errHours]="errHours[i]"
+                        (markAsFinished)="markAsFinished(i)" (cancelJob)="cancelJob(i)"></app-in-progress-offer>
+                    </div>
+                </div>
+                <ng-template #noOffers>
+                    <p translate>offers.no_in_progress_offers</p>
+                </ng-template>
+            </ng-template>
+        </li>
+        <!-- /IN PROGRESS OFFERS -->
+        <!-- FINISHED OFFERS -->
+        <li [ngbNavItem]="4">
+            <a class="text-info" ngbNavLink>
+                <span translate>offers.finished_offers</span>
+                <span *ngIf="offers.finished_offers.length > 0 && !project_finished">
+                    &nbsp;<span class="badge badge-primary">{{offers.finished_offers.length}}</span>
+                </span>
+            </a>
+            <ng-template ngbNavContent>
+                <div *ngIf="offers.finished_offers.length > 0; else noOffers">
+                    <div *ngFor="let offer of offers.finished_offers; let i = index" id="offer.id">
+                        <app-finished-offer [offer]="offer" (newRate)="sendRate(i, $event)"></app-finished-offer>
+                    </div>
+                </div>
+                <ng-template #noOffers>
+                    <p translate>offers.no_finished_offers</p>
+                </ng-template>
+            </ng-template>
+        </li>
+        <!-- /FINISHED OFFERS -->
+    </ul>
+    <div [ngbNavOutlet]="nav"></div>
+</div>

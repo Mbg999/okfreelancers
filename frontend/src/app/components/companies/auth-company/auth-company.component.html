@@ -1,0 +1,50 @@
+<div *ngIf="itsReady; else loading" class="animated fadeIn">
+    <div *ngIf="action == 'create' || action == 'edit'; else show">
+        <!-- ACTION BUTTONS -->
+        <div *ngIf="company" class="btn-group mb-3" role="group" aria-label="Action buttons">
+            <!-- SHOW -->
+            <button (click)="takeAction('show')" class="btn btn-primary">
+                <span class="mdi mdi-eye" translate> miscellaneous.show</span>
+            </button>
+            <!-- /SHOW -->
+            <!-- ACTIVATE -->
+            <button *ngIf="company.deleted_at; else deactivateBtn" type="button" class="btn btn-success" (click)="activate()">
+                <span class="mdi mdi-eye-check" translate> miscellaneous.activate_profile</span>
+            </button>
+            <!-- /ACTIVATE -->
+            <ng-template #deactivateBtn>
+                <!-- DEACTIVATE -->
+                <button type="button" class="btn btn-danger" (click)="deactivate()">
+                    <span class="mdi mdi-eye-off" translate> miscellaneous.deactivate_profile</span>
+                </button>
+                <!-- /DEACTIVATE -->
+            </ng-template>
+            <!-- DELETE -->
+            <button type="button" class="btn btn-dark" (click)="delete()" translate>
+                <span class="mdi mdi-trash-can-outline" translate> miscellaneous.delete_profile</span>
+            </button>
+            <!-- /DELETE -->
+        </div>
+        <!-- /ACTION BUTTONS -->
+        <app-company-form [company]="company" [takenName]="takenName" (result)="send($event)"></app-company-form>
+    </div>
+    <ng-template #show>
+        <div *ngIf="company.ban; else editable">
+            <p class="alert alert-danger mb-2">
+                <b><span translate>miscellaneous.banned_profile</span>:</b>
+                <span class="d-block">"{{ company.ban_reason }}"</span>
+                <span translate>miscellaneous.banned_profile_info</span>
+            </p>
+        </div>
+        <ng-template #editable>
+            <button (click)="takeAction('edit')" class="btn btn-warning mb-2">
+                <span class="mdi mdi-lead-pencil" translate> miscellaneous.edit</span>
+            </button>
+            <p *ngIf="company.deleted_at"><small class="text-danger" translate>miscellaneous.is_deactivated_profile</small></p>
+        </ng-template>
+        <app-show-company [company]="company" [user]="user"></app-show-company>
+    </ng-template>
+</div>
+<ng-template #loading>
+    <h1 class="mdi mdi-circle-half mdi-spin mdi-48px" translate> dialog.loading</h1>
+</ng-template>

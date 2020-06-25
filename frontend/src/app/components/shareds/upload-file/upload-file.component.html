@@ -1,0 +1,63 @@
+<div class="wrapping_div" [ngClass]="imageSize.previewClass">
+    <!-- TYPES -->
+    <div [ngSwitch]="type.toLowerCase()">
+        <!-- IMAGE -->
+        <div *ngSwitchCase="'image'" (click)="image_input.click()">
+            <img [src]="(previewFile) ? previewFile : file | image:imagePipe" class="card-img-top">
+            <button type="button" class="btn btn-primary btn-block">
+                <span *ngIf="!file && !previewFile; else modify"
+                class="mdi mdi-image"> {{'miscellaneous.add_'+imageType | translate}}</span>
+                <ng-template #modify>
+                    <span class="mdi mdi-image-edit"> {{'miscellaneous.change_'+imageType | translate}}</span>
+                </ng-template>
+            </button>
+            <input type="file" #image_input class="d-none" capture="user" accept="image/png,image/jpg,image/jpeg"
+            (change)="addImage($event.target)">
+        </div>
+        <!-- /IMAGE -->
+        <!-- AUDIO -->
+        <div *ngSwitchCase="'audio'">
+            <app-audio [img]="freelancer_picture | image:'freelancers/pictures'" [audio]="(newFile) ? newFile : file | audio:audioPipe"></app-audio>
+            <button type="button" class="btn btn-primary btn-block" (click)="audio_input.click()">
+                <span *ngIf="!file && !newFile; else modify"
+                class="mdi mdi-volume-high" translate> miscellaneous.add_audio</span>
+                <ng-template #modify>
+                    <span class="mdi mdi-volume-high" translate> miscellaneous.change_audio</span>
+                </ng-template>
+            </button>
+            <input type="file" #audio_input class="d-none" capture="user" accept=".ogg,.mp3,.wav"
+            (change)="addAudio($event.target)">
+        </div>
+        <!-- /AUDIO -->
+        <!-- VIDEO -->
+        <div *ngSwitchCase="'video'">
+            <app-video [video]="(newFile) ? newFile : file | video:videoPipe"></app-video>
+            <button type="button" class="btn btn-primary btn-block" (click)="video_input.click()">
+                <span *ngIf="!file && !newFile; else modify"
+                class="mdi mdi-volume-high" translate> miscellaneous.add_video</span>
+                <ng-template #modify>
+                    <span class="mdi mdi-volume-high" translate> miscellaneous.change_video</span>
+                </ng-template>
+            </button>
+            <input type="file" #video_input class="d-none" capture="user" accept=".mp4"
+            (change)="addVideo($event.target)">
+        </div>
+        <!-- /VIDEO -->
+        <!-- UNSUPPORTED TYPE -->
+        <div *ngSwitchDefault>
+            <p (load)="unsupported = true" translate>freelancers.portfolio.not_supported_type</p>
+        </div>
+        <!-- /UNSUPPORTED TYPE -->
+    </div>
+    <!-- /TYPES -->
+    <div *ngIf="!unsupported">
+        <!-- REMOVE IMG BTN -->
+        <button *ngIf="newFile" type="button" class="btn btn-danger btn-block"
+        (click)="removeFile()">
+            <span class="mdi mdi-image-off"> {{'miscellaneous.discard_'+((type == 'image' && imageType) ? imageType : type) | translate}}</span>
+        </button>
+        <!-- /REMOVE IMG BTN -->
+        <!-- ERRORS -->
+        <small *ngIf="fileError" class="text-danger">{{ fileError.err | translate:{mb:fileError.mb} }}</small>
+    </div>
+</div>

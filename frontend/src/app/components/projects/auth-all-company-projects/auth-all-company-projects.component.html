@@ -1,0 +1,18 @@
+<div class="row justify-content-between mb-4">
+    <div class="col-12 col-lg-6 text-center text-lg-left">
+        <h1 translate>projects.your_company_projects</h1>
+    </div>
+    <div class="col-12 col-lg-6 text-center text-lg-right">
+        <button class="btn btn-primary" routerLink="/MyCompany/projects/create">
+            <span class="mdi mdi-plus" translate> projects.create</span>
+        </button>
+    </div>
+</div>
+<div *ngIf="projects; else loading" class="card-columns animated fadeIn">
+    <app-project-card *ngFor="let project of projects"
+    [project]="project"
+    [itsMyProject]="true"></app-project-card>
+</div>
+<ng-template #loading>
+    <h1 class="mdi mdi-circle-half mdi-spin mdi-48px" translate> dialog.loading</h1>
+</ng-template>

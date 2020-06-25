@@ -1,0 +1,35 @@
+<form [formGroup]="jobForm" (submit)="updatedHours.emit(hours.value)" novalidate>
+    <!-- HOURS -->
+    <div class="form-group">
+        <label for="hours" translate>jobs.hours</label>
+        <div class="input-group">
+            <div class="input-group-prepend">
+                <span class="input-group-text">
+                    <span class="mdi mdi-calendar-clock"></span>
+                </span>
+            </div>
+            <input type="number" id="hours" formControlName="hours" class="form-control"
+            [ngClass]="{'is-valid':hours.valid && (hours.dirty || hours.touched),
+            'is-invalid': hours.invalid && (hours.dirty || hours.touched)}">
+        </div>
+        <form-error-messages [control]="hours"></form-error-messages>
+    </div>
+    <!-- /HOURS -->
+    <!-- ACTIONS -->
+    <div *ngIf="!job.finished" class="d-xl-flex justify-content-xl-between">
+        <!-- SUBMIT BTN -->
+        <div class="d-block w-100 px-2">
+            <button type="submit" class="btn btn-primary btn-block" [disabled]="jobForm.invalid">
+                <span class="mdi mdi-update" translate> jobs.update_hours</span>
+            </button>
+        </div>
+        <!-- CANCEL BTN -->
+        <div class="d-block w-100 px-2">
+            <button type="button" class="btn btn-danger btn-block"
+            (click)="cancelJob.emit(true)">
+                <span class="mdi mdi-cancel" translate> jobs.cancel</span>
+            </button>
+        </div>
+    </div>
+    <!-- /ACTIONS -->
+</form>

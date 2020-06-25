@@ -1,0 +1,31 @@
+<div class="modal-content animated fadeIn faster">
+    <!-- MODAL HEADER -->
+    <div class="modal-header">
+        <h3 translate>user.transactions</h3>
+        <button type="button" class="close" (click)="activeModal.dismiss()" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        <input type="text" class="d-none" ngbAutofocus>
+        <!-- 
+            trick for "remove" autofocus, it has some double clicks problems
+            https://stackoverflow.com/questions/53613974/angular7-and-ngbmodal-how-to-remove-default-auto-focus
+        -->
+    </div>
+    <!-- /MODAL HEADER -->
+    <!-- MODAL BODY -->
+    <div class="modal-body">
+        <app-my-balance-table [transactions]="transactions"></app-my-balance-table>
+    </div>
+    <!-- /MODAL BODY -->
+    <!-- MODAL FOOTER -->
+    <div class="modal-footer">
+        <!-- CLOSE BTN -->
+        <div class="col-12">
+            <button type="button" class="btn btn-primary" (click)="activeModal.dismiss()" translate>
+                miscellaneous.close
+            </button>
+        </div>
+        <!-- /CLOSE BTN -->
+    </div>
+    <!-- /MODAL FOOTER -->
+</div>
