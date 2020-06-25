@@ -22,9 +22,9 @@ Cosas que contiene el proyecto:
   <li>Uso de archivos multimedia (audio, vídeo)</li>
 </ul>
 
-Dejo por aquí la documentación oficial de tecnologías utilizadas que presenté: https://drive.google.com/file/d/1rAcEsqmsAsZk4ItVnXBzxtM1-mOyOsIl/view?usp=sharing
-Y por aquí la documentación de la BDD también presentada: https://drive.google.com/file/d/1R6JRT6tLZttLeu4rl1MkqMR0IVaVbjSP/view?usp=sharing
-La documentación de postman para las rutas de la API: https://documenter.getpostman.com/view/4552748/Szf53Us1?version=latest
+<p>Dejo por aquí la documentación oficial de tecnologías utilizadas que presenté: https://drive.google.com/file/d/1rAcEsqmsAsZk4ItVnXBzxtM1-mOyOsIl/view?usp=sharing</p>
+<p>Y por aquí la documentación de la BDD también presentada: https://drive.google.com/file/d/1R6JRT6tLZttLeu4rl1MkqMR0IVaVbjSP/view?usp=sharing</p>
+<p>La documentación de postman para las rutas de la API: https://documenter.getpostman.com/view/4552748/Szf53Us1?version=latest</p>
 
 Puedes visitar la aplicación en el servidor del IES Trassierra: http://www.iestrassierra.net/alumnado/curso1920/DAW/daw1920a2/okfreelancers/
 
