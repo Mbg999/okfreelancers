@@ -1,3 +1,6 @@
+Por aquí he de añadir que los websockets necesitan de un demonio llamado "supervisor" para mantenerlos activos, cosa que no he podido implementar ya que no he tenido acceso más allá de mi virtual host, por lo que para el uso de los websockets los tengo que activar a mano y puede ser que alguna vez no funcione porque el servidor mate el proceso, en ese caso, contáctame y los volveré a activar :D
+
+
 <p align="center"><img src="https://res.cloudinary.com/dtfbvvkyp/image/upload/v1566331377/laravel-logolockup-cmyk-red.svg" width="400"></p>
 
 <p align="center">
