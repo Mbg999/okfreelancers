@@ -24,6 +24,7 @@ Cosas que contiene el proyecto:
 
 Dejo por aquí la documentación oficial de tecnologías utilizadas que presenté: https://drive.google.com/file/d/1rAcEsqmsAsZk4ItVnXBzxtM1-mOyOsIl/view?usp=sharing
 Y por aquí la documentación de la BDD también presentada: https://drive.google.com/file/d/1R6JRT6tLZttLeu4rl1MkqMR0IVaVbjSP/view?usp=sharing
+La documentación de postman para las rutas de la API: https://documenter.getpostman.com/view/4552748/Szf53Us1?version=latest
 
 Puedes visitar la aplicación en el servidor del IES Trassierra: http://www.iestrassierra.net/alumnado/curso1920/DAW/daw1920a2/okfreelancers/
 
@@ -31,4 +32,4 @@ Puedes visitar la aplicación en el servidor del IES Trassierra: http://www.iest
 
 He de añadir que los websockets necesitan de un demonio llamado "supervisor" para mantenerlos activos, cosa que no he podido implementar ya que no he tenido acceso más allá de mi virtual host, por lo que para el uso de los websockets los tengo que activar a mano y puede ser que alguna vez no funcione porque el servidor mate el proceso, en ese caso, contáctame y los volveré a activar :D
 
-Dejo por aquí la documentación de postman para las rutas de la API: https://documenter.getpostman.com/view/4552748/Szf53Us1?version=latest
+
