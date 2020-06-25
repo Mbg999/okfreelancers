@@ -2,6 +2,8 @@ Por aquí he de añadir que los websockets necesitan de un demonio llamado "supe
 
 Dejo por aquí la documentación de postman para las rutas de la API: https://documenter.getpostman.com/view/4552748/Szf53Us1?version=latest
 
+el archivo .env para variables de entorno no se ha añadido por seguridad, aunque en .env.example he dejado todas las variables utilizadas, pero sin claves de usuario
+
 <hr>
 
 <p align="center"><img src="https://res.cloudinary.com/dtfbvvkyp/image/upload/v1566331377/laravel-logolockup-cmyk-red.svg" width="400"></p>
